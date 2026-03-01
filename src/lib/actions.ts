@@ -133,18 +133,15 @@ export async function searchPosts(query: string) {
 }
 
 export async function searchPostsForDropdown(query: string) {
-  const trimmed = query.trim();
-  if (trimmed.length < 2) {
+  const normalized = query.trim().replace(/\s+/g, " ").slice(0, 64);
+  if (normalized.length < 2) {
     return [];
   }
 
   return prisma.post.findMany({
     where: {
       published: true,
-      OR: [
-        { title: { contains: trimmed } },
-        { content: { contains: trimmed } },
-      ],
+      title: { contains: normalized },
     },
     orderBy: { createdAt: "desc" },
     take: 8,

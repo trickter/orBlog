@@ -4,7 +4,7 @@ import { searchPostsForDropdown } from "@/lib/actions";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 interface SearchResult {
   id: string;
@@ -15,6 +15,7 @@ interface SearchResult {
 
 export function SearchBox() {
   const router = useRouter();
+  const latestRequestIdRef = useRef(0);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
@@ -24,19 +25,35 @@ export function SearchBox() {
     const trimmed = query.trim();
 
     if (trimmed.length < 2) {
+      latestRequestIdRef.current += 1;
       setResults([]);
+      setLoading(false);
       setOpen(false);
       return;
     }
+
+    const requestId = latestRequestIdRef.current + 1;
+    latestRequestIdRef.current = requestId;
 
     const timer = setTimeout(async () => {
       try {
         setLoading(true);
         const data = await searchPostsForDropdown(trimmed);
+        if (latestRequestIdRef.current !== requestId) {
+          return;
+        }
         setResults(data);
         setOpen(true);
+      } catch {
+        if (latestRequestIdRef.current !== requestId) {
+          return;
+        }
+        setResults([]);
+        setOpen(false);
       } finally {
-        setLoading(false);
+        if (latestRequestIdRef.current === requestId) {
+          setLoading(false);
+        }
       }
     }, 250);
 
