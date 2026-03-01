@@ -39,11 +39,12 @@ model Category {
 }
 
 model Profile {
-  id     String  @id @default("default")
-  name   String
-  bio    String?
-  avatar String?
-  github String?
-  twitter String?
-  email  String?
+  id           String  @id @default("default")
+  name         String
+  bio          String?
+  avatar       String?
+  github       String?
+  twitter      String?
+  email        String?
+  aboutContent String?
 }

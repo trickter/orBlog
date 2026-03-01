@@ -18,6 +18,7 @@ export async function getProfile() {
       github: null,
       twitter: null,
       email: null,
+      aboutContent: null,
     };
   }
 
@@ -38,6 +39,7 @@ export async function updateProfile(
   const github = String(formData.get('github') ?? '').trim() || null;
   const twitter = String(formData.get('twitter') ?? '').trim() || null;
   const email = String(formData.get('email') ?? '').trim() || null;
+  const aboutContent = String(formData.get('aboutContent') ?? '').trim() || null;
 
   if (!name) {
     throw new Error('Name is required');
@@ -45,10 +47,20 @@ export async function updateProfile(
 
   await prisma.profile.upsert({
     where: { id: 'default' },
-    update: { name, bio, avatar, github, twitter, email },
-    create: { id: 'default', name, bio, avatar, github, twitter, email },
+    update: { name, bio, avatar, github, twitter, email, aboutContent },
+    create: {
+      id: 'default',
+      name,
+      bio,
+      avatar,
+      github,
+      twitter,
+      email,
+      aboutContent,
+    },
   });
 
   revalidatePath('/');
+  revalidatePath('/about');
   revalidatePath('/admin');
 }

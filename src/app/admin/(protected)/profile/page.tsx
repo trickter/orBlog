@@ -16,6 +16,7 @@ export default async function ProfilePage() {
     github: '',
     twitter: '',
     email: '',
+    aboutContent: '',
   };
 
   const current = profile || defaultProfile;
@@ -57,6 +58,19 @@ export default async function ProfilePage() {
             rows={3}
             className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
             placeholder="Tell us about yourself..."
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+            About Page Content (Markdown)
+          </label>
+          <textarea
+            name="aboutContent"
+            defaultValue={current.aboutContent || ''}
+            rows={10}
+            className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 font-mono text-sm"
+            placeholder="# About\nWrite markdown content for /about page..."
           />
         </div>
 
