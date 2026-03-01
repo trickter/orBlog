@@ -2,10 +2,13 @@ import Link from "next/link";
 import { getAllPosts, deletePost } from "@/lib/actions";
 import { formatDate } from "@/lib/utils";
 import { cookies } from "next/headers";
+import { DeletePostButton } from "@/components/DeletePostButton";
 
 export const revalidate = 0;
 
 export default async function AdminPage() {
+  const cookieStore = await cookies();
+  const session = cookieStore.get("admin_session")?.value ?? null;
   const posts = await getAllPosts();
 
   return (
@@ -80,25 +83,11 @@ export default async function AdminPage() {
                     >
                       Edit
                     </Link>
-                    <form action={async () => {
-                      "use server";
-                      const cookieStore = await cookies();
-                      const session = cookieStore.get("admin_session")?.value ?? null;
-                      const id = post.id;
-                      await deletePost(id, session);
-                    }} className="inline">
-                      <button
-                        type="submit"
-                        className="text-red-600 hover:text-red-700"
-                        onClick={(e) => {
-                          if (!confirm("Delete this post?")) {
-                            e.preventDefault();
-                          }
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </form>
+                    <DeletePostButton
+                      postId={post.id}
+                      session={session}
+                      onDelete={deletePost}
+                    />
                   </td>
                 </tr>
               ))}
