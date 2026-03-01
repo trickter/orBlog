@@ -10,6 +10,7 @@ import {
   SEARCH_DROPDOWN_MIN_QUERY,
 } from "@/lib/constants";
 import { slugify, verifyAdmin } from "@/lib/action-helpers";
+import { imageLookupKeys, rewriteMarkdownImageLinks } from "@/lib/markdown-image-links";
 
 export async function getPosts(categorySlug?: string) {
   return prisma.post.findMany({
@@ -79,10 +80,6 @@ export interface ZipImageData {
   data: string; // base64 encoded
 }
 
-function escapeRegExp(input: string): string {
-  return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
 export async function processZipImages(
   content: string,
   images: ZipImageData[],
@@ -97,15 +94,7 @@ export async function processZipImages(
   const uploadDir = path.join(process.cwd(), "public", "uploads", "posts", slug);
   await fs.mkdir(uploadDir, { recursive: true });
 
-  let rewrittenContent = content.replace(
-    /!\[([^\]]*)\]\(([^)]+)\)/g,
-    (_match, alt, imgPath) => {
-      const normalizedPath = String(imgPath).replace(/\\/g, "/");
-      return `![${alt}](${normalizedPath})`;
-    }
-  );
-
-  const imagePathMap: Record<string, string> = {};
+  const imagePathByKey = new Map<string, string>();
 
   for (const img of images) {
     const buffer = Buffer.from(img.data, "base64");
@@ -114,25 +103,23 @@ export async function processZipImages(
     const filepath = path.join(uploadDir, filename);
 
     await fs.writeFile(filepath, buffer);
-    imagePathMap[img.name] = `/uploads/posts/${slug}/${filename}`;
+    const nextPath = `/uploads/posts/${slug}/${filename}`;
+    for (const key of imageLookupKeys(img.name)) {
+      if (!imagePathByKey.has(key)) {
+        imagePathByKey.set(key, nextPath);
+      }
+    }
   }
 
-  for (const [originalName, newPath] of Object.entries(imagePathMap)) {
-    const escapedOriginal = escapeRegExp(originalName);
-    const escapedBase = escapeRegExp(path.basename(originalName));
-
-    rewrittenContent = rewrittenContent.replace(
-      new RegExp(`!\\[([^\\]]*)\\]\\(([^)]*${escapedOriginal})\\)`, "g"),
-      `![$1](${newPath})`
-    );
-
-    rewrittenContent = rewrittenContent.replace(
-      new RegExp(`!\\[([^\\]]*)\\]\\(([^)]*${escapedBase})\\)`, "g"),
-      `![$1](${newPath})`
-    );
-  }
-
-  return rewrittenContent;
+  return rewriteMarkdownImageLinks(content, (markdownUrl) => {
+    for (const key of imageLookupKeys(markdownUrl)) {
+      const candidate = imagePathByKey.get(key);
+      if (candidate) {
+        return candidate;
+      }
+    }
+    return null;
+  });
 }
 
 export async function createPost(formData: FormData, adminSecret: string | null) {
