@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { getPosts, getProfile, getCategories } from "@/lib/actions";
+import { getProfile, getCategories } from "@/lib/actions";
 import { BlogLayout } from "@/components/BlogLayout";
-import { PostCard } from "@/components/PostCard";
 import { CategoryFilter } from "@/components/CategoryFilter";
+import { InfinitePostList } from "@/components/InfinitePostList";
+import { getPostsPage } from "@/lib/posts-page";
 
 export const revalidate = 0;
 
@@ -12,8 +13,8 @@ interface PageProps {
 
 export default async function Home({ searchParams }: PageProps) {
   const { category } = await searchParams;
-  const [posts, profile, categories] = await Promise.all([
-    getPosts(category),
+  const [initialPage, profile, categories] = await Promise.all([
+    getPostsPage({ categorySlug: category, limit: 10 }),
     getProfile(),
     getCategories(),
   ]);
@@ -24,7 +25,7 @@ export default async function Home({ searchParams }: PageProps) {
         <CategoryFilter categories={categories} />
       )}
 
-      {posts.length === 0 ? (
+      {initialPage.items.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-zinc-600 dark:text-zinc-400">
             No posts yet.{" "}
@@ -34,11 +35,12 @@ export default async function Home({ searchParams }: PageProps) {
           </p>
         </div>
       ) : (
-        <div className="space-y-6">
-          {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
-          ))}
-        </div>
+        <InfinitePostList
+          initialPosts={initialPage.items}
+          initialCursor={initialPage.nextCursor}
+          initialHasMore={initialPage.hasMore}
+          category={category}
+        />
       )}
     </BlogLayout>
   );

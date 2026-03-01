@@ -8,7 +8,7 @@ interface PostCardProps {
     slug: string;
     content: string;
     viewCount: number;
-    createdAt: Date;
+    createdAt: Date | string;
     category?: {
       name: string;
       slug: string;
