@@ -67,7 +67,7 @@ export async function getAllPosts() {
   });
 }
 
-export async function getPostBySlug(slug: string, includeViewCount: boolean = true) {
+export async function getPostBySlug(slug: string) {
   const post = await prisma.post.findUnique({
     where: { slug },
     select: {

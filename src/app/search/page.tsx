@@ -21,7 +21,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
 
       {query && posts.length === 0 ? (
         <p className="text-zinc-600 dark:text-zinc-400">
-          No posts found matching "{query}"
+          No posts found matching &quot;{query}&quot;
         </p>
       ) : (
         <div className="space-y-6">
