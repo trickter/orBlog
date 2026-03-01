@@ -1,19 +1,9 @@
 import Link from "next/link";
 import { formatDate, extractExcerpt } from "@/lib/utils";
+import { PostCardData } from "@/lib/post-types";
 
 interface PostCardProps {
-  post: {
-    id: string;
-    title: string;
-    slug: string;
-    content: string;
-    viewCount: number;
-    createdAt: Date | string;
-    category?: {
-      name: string;
-      slug: string;
-    } | null;
-  };
+  post: PostCardData;
 }
 
 export function PostCard({ post }: PostCardProps) {
