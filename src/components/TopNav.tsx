@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Search, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
+import { SearchBox } from "@/components/SearchBox";
 
 interface Category {
   id: string;
@@ -25,17 +26,9 @@ export function TopNav({ categories }: TopNavProps) {
             orBlog
           </Link>
 
-          <form action="/search" className="flex items-center justify-center min-w-0">
-            <div className="relative w-full max-w-md">
-              <input
-                type="text"
-                name="q"
-                placeholder="搜索..."
-                className="w-full px-3 py-1.5 pl-8 text-sm bg-zinc-100 dark:bg-zinc-800 border-none rounded-full text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-            </div>
-          </form>
+          <div className="flex items-center justify-center min-w-0">
+            <SearchBox />
+          </div>
 
           <nav className="flex items-center gap-2">
             <div className="relative">
