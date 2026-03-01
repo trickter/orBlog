@@ -8,14 +8,6 @@ export const revalidate = 0;
 export default async function AdminPage() {
   const posts = await getAllPosts();
 
-  async function deleteAction(formData: FormData) {
-    "use server";
-    const cookieStore = await cookies();
-    const adminSecret = cookieStore.get("admin_secret")?.value ?? null;
-    const id = formData.get("id") as string;
-    await deletePost(id, adminSecret);
-  }
-
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -88,12 +80,12 @@ export default async function AdminPage() {
                     >
                       Edit
                     </Link>
-                    <form action={async (formData) => {
+                    <form action={async () => {
                       "use server";
                       const cookieStore = await cookies();
-                      const adminSecret = cookieStore.get("admin_secret")?.value ?? null;
+                      const session = cookieStore.get("admin_session")?.value ?? null;
                       const id = post.id;
-                      await deletePost(id, adminSecret);
+                      await deletePost(id, session);
                     }} className="inline">
                       <button
                         type="submit"

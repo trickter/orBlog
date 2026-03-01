@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { verifySessionToken } from "@/lib/auth";
 
 function slugify(text: string): string {
   return text
@@ -13,9 +14,10 @@ function slugify(text: string): string {
     .trim();
 }
 
-// Admin secret check
-function verifyAdmin(secret: string | null): boolean {
-  return secret === process.env.ADMIN_SECRET;
+// Admin session check
+function verifyAdmin(session: string | null): boolean {
+  if (!session) return false;
+  return verifySessionToken(session);
 }
 
 export async function getPosts() {

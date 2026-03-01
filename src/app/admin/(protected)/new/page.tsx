@@ -5,8 +5,8 @@ export default function NewPostPage() {
   async function handleSubmit(formData: FormData) {
     "use server";
     const cookieStore = await cookies();
-    const adminSecret = cookieStore.get("admin_secret")?.value ?? null;
-    await createPost(formData, adminSecret);
+    const session = cookieStore.get("admin_session")?.value ?? null;
+    await createPost(formData, session);
   }
 
   return (

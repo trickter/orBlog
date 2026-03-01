@@ -1,7 +1,7 @@
 ---
 title: Personal Blog Platform
 type: feat
-status: active
+status: completed
 date: 2026-03-01
 origin: docs/brainstorms/2026-03-01-personal-blog-brainstorm.md
 ---
@@ -60,18 +60,18 @@ Build a Next.js app with:
 ## Acceptance Criteria
 
 ### Core Features
-- [ ] Home page lists all published posts (title, excerpt, date)
-- [ ] Post detail page renders Markdown to HTML with syntax highlighting
-- [ ] Admin page lists all posts with edit/delete options
-- [ ] Create new post (title, content in Markdown, published status)
-- [ ] Edit existing post
-- [ ] Delete post with confirmation
+- [x] Home page lists all published posts (title, excerpt, date)
+- [x] Post detail page renders Markdown to HTML with syntax highlighting
+- [x] Admin page lists all posts with edit/delete options
+- [x] Create new post (title, content in Markdown, published status)
+- [x] Edit existing post
+- [x] Delete post with confirmation
 
 ### Technical Requirements
-- [ ] SQLite database with Prisma schema (posts, tags)
-- [ ] Admin panel protected by `ADMIN_SECRET` env var
-- [ ] Markdown rendered with proper formatting and code highlighting
-- [ ] Responsive design with Tailwind CSS
+- [x] SQLite database with Prisma schema (posts, tags)
+- [x] Admin panel protected by `ADMIN_SECRET` env var
+- [x] Markdown rendered with proper formatting and code highlighting
+- [x] Responsive design with Tailwind CSS
 
 ### Data Model
 
