@@ -389,3 +389,11 @@ export async function deleteCategory(id: string, adminSecret: string | null) {
   revalidatePath("/");
   revalidatePath("/admin");
 }
+
+export async function deleteCategoryFromClient(id: string) {
+  "use server";
+  const { cookies } = await import("next/headers");
+  const cookieStore = await cookies();
+  const session = cookieStore.get("admin_session")?.value ?? null;
+  await deleteCategory(id, session);
+}

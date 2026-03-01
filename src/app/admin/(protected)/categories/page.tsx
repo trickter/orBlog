@@ -1,23 +1,12 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { deleteCategory } from "@/lib/actions";
-import { cookies } from "next/headers";
+import { DeleteButton } from "@/components/DeleteCategoryButton";
 
 export default async function CategoriesPage() {
   const categories = await prisma.category.findMany({
     orderBy: { name: "asc" },
     include: { _count: { select: { posts: true } } },
   });
-
-  async function handleDelete(formData: FormData) {
-    "use server";
-    const cookieStore = await cookies();
-    const session = cookieStore.get("admin_session")?.value ?? null;
-    const id = String(formData.get("id") ?? "").trim();
-    if (id) {
-      await deleteCategory(id, session);
-    }
-  }
 
   return (
     <div>
@@ -76,20 +65,7 @@ export default async function CategoriesPage() {
                       >
                         Edit
                       </Link>
-                      <form action={handleDelete}>
-                        <input type="hidden" name="id" value={category.id} />
-                        <button
-                          type="submit"
-                          className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
-                          onClick={(e) => {
-                            if (!confirm("Are you sure you want to delete this category?")) {
-                              e.preventDefault();
-                            }
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </form>
+                      <DeleteButton id={category.id} />
                     </div>
                   </td>
                 </tr>

@@ -1,5 +1,7 @@
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { updateProfile } from "@/lib/actions";
+import { cookies } from "next/headers";
 
 export default async function ProfilePage() {
 
@@ -118,12 +120,12 @@ export default async function ProfilePage() {
           >
             Save Profile
           </button>
-          <a
+          <Link
             href="/admin"
             className="px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800"
           >
             Cancel
-          </a>
+          </Link>
         </div>
       </form>
     </div>
