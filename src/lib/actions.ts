@@ -132,6 +132,31 @@ export async function searchPosts(query: string) {
   });
 }
 
+export async function searchPostsForDropdown(query: string) {
+  const trimmed = query.trim();
+  if (trimmed.length < 2) {
+    return [];
+  }
+
+  return prisma.post.findMany({
+    where: {
+      published: true,
+      OR: [
+        { title: { contains: trimmed } },
+        { content: { contains: trimmed } },
+      ],
+    },
+    orderBy: { createdAt: "desc" },
+    take: 8,
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      createdAt: true,
+    },
+  });
+}
+
 export async function getCategories() {
   return prisma.category.findMany({
     orderBy: { name: "asc" },
