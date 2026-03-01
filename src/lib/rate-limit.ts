@@ -1,5 +1,9 @@
 // Simple in-memory rate limiter
 // For production, use Redis or similar
+import {
+  LOGIN_RATE_LIMIT_MAX_ATTEMPTS,
+  LOGIN_RATE_LIMIT_WINDOW_MS,
+} from "@/lib/constants";
 
 interface RateLimitEntry {
   count: number;
@@ -7,9 +11,6 @@ interface RateLimitEntry {
 }
 
 const rateLimitStore = new Map<string, RateLimitEntry>();
-
-const MAX_ATTEMPTS = 5;
-const WINDOW_MS = 60 * 1000; // 1 minute
 
 export function checkRateLimit(key: string): { allowed: boolean; remaining: number } {
   const now = Date.now();
@@ -19,17 +20,17 @@ export function checkRateLimit(key: string): { allowed: boolean; remaining: numb
     // Reset or create new entry
     rateLimitStore.set(key, {
       count: 1,
-      resetTime: now + WINDOW_MS,
+      resetTime: now + LOGIN_RATE_LIMIT_WINDOW_MS,
     });
-    return { allowed: true, remaining: MAX_ATTEMPTS - 1 };
+    return { allowed: true, remaining: LOGIN_RATE_LIMIT_MAX_ATTEMPTS - 1 };
   }
 
-  if (entry.count >= MAX_ATTEMPTS) {
+  if (entry.count >= LOGIN_RATE_LIMIT_MAX_ATTEMPTS) {
     return { allowed: false, remaining: 0 };
   }
 
   entry.count++;
-  return { allowed: true, remaining: MAX_ATTEMPTS - entry.count };
+  return { allowed: true, remaining: LOGIN_RATE_LIMIT_MAX_ATTEMPTS - entry.count };
 }
 
 export function resetRateLimit(key: string): void {

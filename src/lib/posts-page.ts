@@ -1,20 +1,10 @@
 import { prisma } from "@/lib/prisma";
-
-export interface PostPageItem {
-  id: string;
-  title: string;
-  slug: string;
-  content: string;
-  published: boolean;
-  viewCount: number;
-  createdAt: Date;
-  updatedAt: Date;
-  category: {
-    id: string;
-    name: string;
-    slug: string;
-  } | null;
-}
+import { postWithCategorySelect } from "@/lib/post-select";
+import { PostWithCategory } from "@/lib/post-types";
+import {
+  FEED_PAGE_DEFAULT_LIMIT,
+  FEED_PAGE_MAX_LIMIT,
+} from "@/lib/constants";
 
 interface GetPostsPageOptions {
   categorySlug?: string;
@@ -23,7 +13,7 @@ interface GetPostsPageOptions {
 }
 
 export interface PostsPageResult {
-  items: PostPageItem[];
+  items: PostWithCategory[];
   nextCursor: string | null;
   hasMore: boolean;
 }
@@ -31,9 +21,9 @@ export interface PostsPageResult {
 export async function getPostsPage({
   categorySlug,
   cursor,
-  limit = 10,
+  limit = FEED_PAGE_DEFAULT_LIMIT,
 }: GetPostsPageOptions = {}): Promise<PostsPageResult> {
-  const pageSize = Math.min(Math.max(limit, 1), 20);
+  const pageSize = Math.min(Math.max(limit, 1), FEED_PAGE_MAX_LIMIT);
 
   const posts = await prisma.post.findMany({
     where: {
@@ -43,23 +33,7 @@ export async function getPostsPage({
     orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     take: pageSize + 1,
     ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      content: true,
-      published: true,
-      viewCount: true,
-      createdAt: true,
-      updatedAt: true,
-      category: {
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-        },
-      },
-    },
+    select: postWithCategorySelect,
   });
 
   const hasMore = posts.length > pageSize;

@@ -5,6 +5,10 @@ import { Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
+import {
+  SEARCH_DROPDOWN_DEBOUNCE_MS,
+  SEARCH_DROPDOWN_MIN_QUERY,
+} from "@/lib/constants";
 
 interface SearchResult {
   id: string;
@@ -24,7 +28,7 @@ export function SearchBox() {
   useEffect(() => {
     const trimmed = query.trim();
 
-    if (trimmed.length < 2) {
+    if (trimmed.length < SEARCH_DROPDOWN_MIN_QUERY) {
       latestRequestIdRef.current += 1;
       setResults([]);
       setLoading(false);
@@ -55,7 +59,7 @@ export function SearchBox() {
           setLoading(false);
         }
       }
-    }, 250);
+    }, SEARCH_DROPDOWN_DEBOUNCE_MS);
 
     return () => clearTimeout(timer);
   }, [query]);
@@ -72,13 +76,13 @@ export function SearchBox() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="relative w-full max-w-md">
+    <form onSubmit={handleSubmit} className="relative w-full max-w-sm">
       <input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onFocus={() => {
-          if (query.trim().length >= 2) {
+          if (query.trim().length >= SEARCH_DROPDOWN_MIN_QUERY) {
             setOpen(true);
           }
         }}

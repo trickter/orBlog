@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getPostsPage } from "@/lib/posts-page";
+import { FEED_PAGE_DEFAULT_LIMIT } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
@@ -8,8 +9,8 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get("category")?.trim() || undefined;
     const cursor = searchParams.get("cursor")?.trim() || undefined;
-    const limitParam = Number(searchParams.get("limit") ?? "10");
-    const limit = Number.isFinite(limitParam) ? limitParam : 10;
+    const limitParam = Number(searchParams.get("limit") ?? `${FEED_PAGE_DEFAULT_LIMIT}`);
+    const limit = Number.isFinite(limitParam) ? limitParam : FEED_PAGE_DEFAULT_LIMIT;
 
     const page = await getPostsPage({
       categorySlug: category,

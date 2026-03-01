@@ -2,19 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PostCard } from "@/components/PostCard";
+import { PostCardData } from "@/lib/post-types";
+import { FEED_PAGE_DEFAULT_LIMIT } from "@/lib/constants";
 
-interface PostItem {
-  id: string;
-  title: string;
-  slug: string;
-  content: string;
-  viewCount: number;
-  createdAt: string | Date;
-  category?: {
-    name: string;
-    slug: string;
-  } | null;
-}
+type PostItem = PostCardData;
 
 interface PostsPageResponse {
   items: PostItem[];
@@ -57,7 +48,7 @@ export function InfinitePostList({
       setError(null);
 
       const params = new URLSearchParams();
-      params.set("limit", "10");
+      params.set("limit", `${FEED_PAGE_DEFAULT_LIMIT}`);
       if (category) {
         params.set("category", category);
       }

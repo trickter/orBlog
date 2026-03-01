@@ -1,0 +1,98 @@
+"use server";
+
+import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
+import { slugify, verifyAdmin } from "@/lib/action-helpers";
+import { postWithCategorySelect } from "@/lib/post-select";
+
+export async function getCategories() {
+  return prisma.category.findMany({
+    orderBy: { name: "asc" },
+  });
+}
+
+export async function getCategoryBySlug(slug: string) {
+  return prisma.category.findUnique({
+    where: { slug },
+  });
+}
+
+export async function getPostsByCategory(categorySlug: string) {
+  return prisma.post.findMany({
+    where: {
+      published: true,
+      category: { slug: categorySlug },
+    },
+    orderBy: { createdAt: "desc" },
+    select: postWithCategorySelect,
+  });
+}
+
+export async function createCategory(formData: FormData, adminSecret: string | null) {
+  if (!verifyAdmin(adminSecret)) {
+    throw new Error("Unauthorized");
+  }
+
+  const name = String(formData.get("name") ?? "").trim();
+  if (!name) {
+    throw new Error("Category name is required");
+  }
+
+  const slug = slugify(name);
+  const existing = await prisma.category.findUnique({ where: { slug } });
+  if (existing) {
+    throw new Error("Category already exists");
+  }
+
+  await prisma.category.create({
+    data: { name, slug },
+  });
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+}
+
+export async function updateCategory(formData: FormData, adminSecret: string | null) {
+  if (!verifyAdmin(adminSecret)) {
+    throw new Error("Unauthorized");
+  }
+
+  const id = String(formData.get("id") ?? "").trim();
+  const name = String(formData.get("name") ?? "").trim();
+  if (!id || !name) {
+    throw new Error("ID and name are required");
+  }
+
+  const slug = slugify(name);
+  const existing = await prisma.category.findUnique({ where: { slug } });
+  if (existing && existing.id !== id) {
+    throw new Error("Category name already exists");
+  }
+
+  await prisma.category.update({
+    where: { id },
+    data: { name, slug },
+  });
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+}
+
+export async function deleteCategory(id: string, adminSecret: string | null) {
+  if (!verifyAdmin(adminSecret)) {
+    throw new Error("Unauthorized");
+  }
+
+  await prisma.category.delete({ where: { id } });
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+}
+
+export async function deleteCategoryFromClient(id: string) {
+  "use server";
+  const { cookies } = await import("next/headers");
+  const cookieStore = await cookies();
+  const session = cookieStore.get("admin_session")?.value ?? null;
+  await deleteCategory(id, session);
+}
