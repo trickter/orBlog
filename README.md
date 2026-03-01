@@ -1,36 +1,173 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# orBlog - Personal Blog Platform
 
-## Getting Started
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-16-black?style=flat&logo=next.js" alt="Next.js">
+  <img src="https://img.shields.io/badge/TypeScript-5.0-blue?style=flat&logo=typescript" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Prisma-SQLite-purple?style=flat&logo=prisma" alt="Prisma">
+  <img src="https://img.shields.io/badge/License-MIT-green?style=flat" alt="License">
+</p>
 
-First, run the development server:
+A modern, full-stack personal blog platform built with Next.js 16, featuring Markdown support, category management, ZIP import for posts, and a clean responsive design.
+
+## ✨ Features
+
+- **Markdown Blog Posts** - Write posts using familiar Markdown syntax
+- **ZIP Import** - Import posts from ZIP files containing Markdown and images
+- **Category Management** - Organize posts with categories
+- **Search** - Full-text search across posts
+- **Dark/Light Theme** - Toggle between dark and light modes
+- **Admin Panel** - Protected admin area for post and category management
+- **Responsive Design** - Works beautifully on all devices
+- **SEO Friendly** - Server-side rendering for optimal SEO
+
+## 🛠 Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Database**: SQLite + Prisma ORM
+- **Styling**: Tailwind CSS v4
+- **Markdown**: react-markdown + remark-gfm
+- **Testing**: Jest + React Testing Library + Playwright
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- npm / yarn / pnpm
+
+### Installation
 
 ```bash
+# Clone the repository
+git clone <repository-url>
+cd brainstorm
+
+# Install dependencies
+npm install
+
+# Setup environment variables
+cp .env.example .env
+
+# Initialize database
+npx prisma db push
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Admin Access
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Navigate to `/admin/login`
+2. Enter your `ADMIN_SECRET` from `.env` file
+3. Manage posts, categories, and profile
 
-## Learn More
+## 📁 Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/                    # Next.js App Router pages
+│   ├── (public)/          # Public pages
+│   │   ├── page.tsx       # Homepage
+│   │   ├── about/         # About page
+│   │   ├── search/        # Search page
+│   │   └── posts/[slug]/  # Blog post pages
+│   ├── admin/             # Admin pages (protected)
+│   │   ├── login/         # Admin login
+│   │   └── (protected)/   # Protected admin routes
+│   └── api/               # API routes
+├── components/            # React components
+├── lib/                   # Utility functions & server actions
+│   ├── actions-posts.ts   # Post CRUD operations
+│   ├── actions-categories.ts
+│   ├── actions-profile.ts
+│   ├── auth.ts           # Authentication
+│   └── prisma.ts         # Database client
+└── styles/                # Global styles
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## ⚙️ Environment Variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Create a `.env` file based on `.env.example`:
 
-## Deploy on Vercel
+| Variable | Description | Required | Default |
+|----------|-------------|----------|---------|
+| `DATABASE_URL` | SQLite database path | Yes | `file:./dev.db` |
+| `ADMIN_SECRET` | Admin password | Yes | - |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Generate a secure admin secret:
+```bash
+openssl rand -base64 32
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🧪 Testing
+
+```bash
+# Run unit tests
+npm test
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run E2E tests
+npm run test:e2e
+
+# Run E2E tests in UI mode
+npm run test:e2e:ui
+```
+
+## 🏗 Deployment
+
+### Vercel (Recommended)
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+```
+
+### Docker
+
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npx prisma generate
+RUN npm run build
+EXPOSE 3000
+CMD ["npm", "start"]
+```
+
+### Manual Deployment
+
+```bash
+# Build for production
+npm run build
+
+# Start production server
+npm start
+```
+
+## 📝 License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please read our [contributing guidelines](CONTRIBUTING.md) first.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+<p align="center">Built with ❤️ using Next.js</p>
