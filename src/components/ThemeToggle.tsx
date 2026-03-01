@@ -9,14 +9,9 @@ export function ThemeToggle() {
 
   useEffect(() => {
     setMounted(true);
-    // Check localStorage first, then system preference
-    const stored = localStorage.getItem("theme") as "light" | "dark" | null;
-    if (stored) {
-      setTheme(stored);
-      document.documentElement.classList.toggle("dark", stored === "dark");
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    // Read current theme from document class
+    if (document.documentElement.classList.contains("dark")) {
       setTheme("dark");
-      document.documentElement.classList.add("dark");
     }
   }, []);
 
