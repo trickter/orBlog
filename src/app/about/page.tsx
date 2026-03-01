@@ -1,8 +1,11 @@
+import { getProfile, getCategories } from "@/lib/actions";
 import { BlogLayout } from "@/components/BlogLayout";
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const [profile, categories] = await Promise.all([getProfile(), getCategories()]);
+
   return (
-    <BlogLayout>
+    <BlogLayout profile={profile} categories={categories}>
       <article className="prose prose-slate dark:prose-invert max-w-none">
         <h1>About</h1>
         <p>

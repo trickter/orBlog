@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPostBySlug } from "@/lib/actions";
+import { getPostBySlug, getProfile, getCategories } from "@/lib/actions";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { formatDate } from "@/lib/utils";
 import { BlogLayout } from "@/components/BlogLayout";
@@ -14,14 +14,18 @@ interface PageProps {
 
 export default async function PostPage({ params }: PageProps) {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
+  const [post, profile, categories] = await Promise.all([
+    getPostBySlug(slug),
+    getProfile(),
+    getCategories(),
+  ]);
 
   if (!post) {
     notFound();
   }
 
   return (
-    <BlogLayout>
+    <BlogLayout profile={profile} categories={categories}>
       <ViewCounter postId={post.id} />
 
       <article>

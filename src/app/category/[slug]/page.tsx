@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getCategoryBySlug, getPostsByCategory } from "@/lib/actions";
+import { getCategoryBySlug, getPostsByCategory, getProfile, getCategories } from "@/lib/actions";
 import { BlogLayout } from "@/components/BlogLayout";
 import { PostCard } from "@/components/PostCard";
 
@@ -11,16 +11,19 @@ interface PageProps {
 
 export default async function CategoryPage({ params }: PageProps) {
   const { slug } = await params;
-  const category = await getCategoryBySlug(slug);
+  const [category, posts, profile, categories] = await Promise.all([
+    getCategoryBySlug(slug),
+    getPostsByCategory(slug),
+    getProfile(),
+    getCategories(),
+  ]);
 
   if (!category) {
     notFound();
   }
 
-  const posts = await getPostsByCategory(slug);
-
   return (
-    <BlogLayout>
+    <BlogLayout profile={profile} categories={categories}>
       <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-6">
         {category.name}
       </h1>

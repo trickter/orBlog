@@ -18,7 +18,7 @@ export default async function AdminLayout({
           >
             Admin Panel
           </Link>
-          <div className="flex gap-4">
+          <nav className="flex gap-4">
             <Link
               href="/"
               className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
@@ -26,12 +26,24 @@ export default async function AdminLayout({
               View Blog
             </Link>
             <Link
+              href="/admin/profile"
+              className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
+            >
+              Profile
+            </Link>
+            <Link
+              href="/admin/categories"
+              className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
+            >
+              Categories
+            </Link>
+            <Link
               href="/admin/new"
               className="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
             >
               New Post
             </Link>
-          </div>
+          </nav>
         </div>
       </header>
       <main className="max-w-5xl mx-auto px-4 py-8">{children}</main>

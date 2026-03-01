@@ -1,15 +1,29 @@
 import Link from "next/link";
-import { getPosts } from "@/lib/actions";
+import { getPosts, getProfile, getCategories } from "@/lib/actions";
 import { BlogLayout } from "@/components/BlogLayout";
 import { PostCard } from "@/components/PostCard";
+import { CategoryFilter } from "@/components/CategoryFilter";
 
 export const revalidate = 0;
 
-export default async function Home() {
-  const posts = await getPosts();
+interface PageProps {
+  searchParams: Promise<{ category?: string }>;
+}
+
+export default async function Home({ searchParams }: PageProps) {
+  const { category } = await searchParams;
+  const [posts, profile, categories] = await Promise.all([
+    getPosts(category),
+    getProfile(),
+    getCategories(),
+  ]);
 
   return (
-    <BlogLayout>
+    <BlogLayout profile={profile} categories={categories}>
+      {categories.length > 0 && (
+        <CategoryFilter categories={categories} />
+      )}
+
       {posts.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-zinc-600 dark:text-zinc-400">

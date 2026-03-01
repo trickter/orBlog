@@ -37,3 +37,13 @@ model Category {
   slug String @unique
   posts Post[]
 }
+
+model Profile {
+  id     String  @id @default("default")
+  name   String
+  bio    String?
+  avatar String?
+  github String?
+  twitter String?
+  email  String?
+}

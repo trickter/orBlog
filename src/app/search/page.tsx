@@ -1,4 +1,4 @@
-import { searchPosts } from "@/lib/actions";
+import { searchPosts, getProfile, getCategories } from "@/lib/actions";
 import { BlogLayout } from "@/components/BlogLayout";
 import { PostCard } from "@/components/PostCard";
 
@@ -11,10 +11,14 @@ interface PageProps {
 export default async function SearchPage({ searchParams }: PageProps) {
   const { q } = await searchParams;
   const query = q || "";
-  const posts = query ? await searchPosts(query) : [];
+  const [posts, profile, categories] = await Promise.all([
+    query ? searchPosts(query) : Promise.resolve([]),
+    getProfile(),
+    getCategories(),
+  ]);
 
   return (
-    <BlogLayout>
+    <BlogLayout profile={profile} categories={categories}>
       <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-6">
         {query ? `Search results for "${query}"` : "Search"}
       </h1>

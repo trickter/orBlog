@@ -20,9 +20,12 @@ function verifyAdmin(session: string | null): boolean {
   return verifySessionToken(session);
 }
 
-export async function getPosts() {
+export async function getPosts(categorySlug?: string) {
   return prisma.post.findMany({
-    where: { published: true },
+    where: {
+      published: true,
+      ...(categorySlug ? { category: { slug: categorySlug } } : {}),
+    },
     orderBy: { createdAt: "desc" },
     select: {
       id: true,
@@ -270,5 +273,119 @@ export async function deletePost(id: string, adminSecret: string | null) {
 
   revalidatePath("/");
   revalidatePath(`/posts/${post.slug}`);
+  revalidatePath("/admin");
+}
+
+// Profile actions
+export async function getProfile() {
+  const profile = await prisma.profile.findUnique({
+    where: { id: "default" },
+  });
+  // Return default profile if not found
+  if (!profile) {
+    return {
+      id: "default",
+      name: "Alex",
+      bio: "Full Stack Developer",
+      avatar: null,
+      github: null,
+      twitter: null,
+      email: null,
+    };
+  }
+  return profile;
+}
+
+export async function updateProfile(formData: FormData, adminSecret: string | null) {
+  if (!verifyAdmin(adminSecret)) {
+    throw new Error("Unauthorized");
+  }
+
+  const name = String(formData.get("name") ?? "").trim();
+  const bio = String(formData.get("bio") ?? "").trim() || null;
+  const avatar = String(formData.get("avatar") ?? "").trim() || null;
+  const github = String(formData.get("github") ?? "").trim() || null;
+  const twitter = String(formData.get("twitter") ?? "").trim() || null;
+  const email = String(formData.get("email") ?? "").trim() || null;
+
+  if (!name) {
+    throw new Error("Name is required");
+  }
+
+  await prisma.profile.upsert({
+    where: { id: "default" },
+    update: { name, bio, avatar, github, twitter, email },
+    create: { id: "default", name, bio, avatar, github, twitter, email },
+  });
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+}
+
+// Category CRUD actions
+export async function createCategory(formData: FormData, adminSecret: string | null) {
+  if (!verifyAdmin(adminSecret)) {
+    throw new Error("Unauthorized");
+  }
+
+  const name = String(formData.get("name") ?? "").trim();
+
+  if (!name) {
+    throw new Error("Category name is required");
+  }
+
+  const slug = slugify(name);
+
+  // Check for duplicate
+  const existing = await prisma.category.findUnique({ where: { slug } });
+  if (existing) {
+    throw new Error("Category already exists");
+  }
+
+  await prisma.category.create({
+    data: { name, slug },
+  });
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+}
+
+export async function updateCategory(formData: FormData, adminSecret: string | null) {
+  if (!verifyAdmin(adminSecret)) {
+    throw new Error("Unauthorized");
+  }
+
+  const id = String(formData.get("id") ?? "").trim();
+  const name = String(formData.get("name") ?? "").trim();
+
+  if (!id || !name) {
+    throw new Error("ID and name are required");
+  }
+
+  const slug = slugify(name);
+
+  // Check for duplicate (excluding current)
+  const existing = await prisma.category.findUnique({ where: { slug } });
+  if (existing && existing.id !== id) {
+    throw new Error("Category name already exists");
+  }
+
+  await prisma.category.update({
+    where: { id },
+    data: { name, slug },
+  });
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+}
+
+export async function deleteCategory(id: string, adminSecret: string | null) {
+  if (!verifyAdmin(adminSecret)) {
+    throw new Error("Unauthorized");
+  }
+
+  await prisma.category.delete({ where: { id } });
+
+  revalidatePath("/");
   revalidatePath("/admin");
 }
