@@ -1,27 +1,38 @@
 import Link from "next/link";
-import { getPosts } from "@/lib/actions";
+import { notFound } from "next/navigation";
+import { getCategoryBySlug, getPostsByCategory } from "@/lib/actions";
 import { formatDate, extractExcerpt } from "@/lib/utils";
 import { Header } from "@/components/Header";
 
 export const revalidate = 0;
 
-export default async function Home() {
-  const posts = await getPosts();
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export default async function CategoryPage({ params }: PageProps) {
+  const { slug } = await params;
+  const category = await getCategoryBySlug(slug);
+
+  if (!category) {
+    notFound();
+  }
+
+  const posts = await getPostsByCategory(slug);
 
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-900">
       <Header />
 
       <main className="max-w-3xl mx-auto px-4 py-12">
+        <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-6">
+          Category: {category.name}
+        </h1>
+
         {posts.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-zinc-600 dark:text-zinc-400">
-              No posts yet.{" "}
-              <Link href="/admin" className="text-blue-600 hover:underline">
-                Create your first post
-              </Link>
-            </p>
-          </div>
+          <p className="text-zinc-600 dark:text-zinc-400">
+            No posts in this category yet.
+          </p>
         ) : (
           <div className="space-y-8">
             {posts.map((post) => (
@@ -40,18 +51,6 @@ export default async function Home() {
                     <time>{formatDate(post.createdAt)}</time>
                     <span>•</span>
                     <span>{post.viewCount} views</span>
-                    {post.category && (
-                      <>
-                        <span>•</span>
-                        <Link
-                          href={`/category/${post.category.slug}`}
-                          className="text-blue-600 dark:text-blue-400 hover:underline"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          {post.category.name}
-                        </Link>
-                      </>
-                    )}
                   </div>
                 </Link>
               </article>

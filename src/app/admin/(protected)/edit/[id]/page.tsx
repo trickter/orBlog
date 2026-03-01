@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { updatePost } from "@/lib/actions";
+import { updatePost, getCategories } from "@/lib/actions";
 import { cookies } from "next/headers";
 
 interface PageProps {
@@ -12,6 +12,7 @@ export default async function EditPostPage({ params }: PageProps) {
   const post = await prisma.post.findUnique({
     where: { id },
   });
+  const categories = await getCategories();
 
   if (!post) {
     notFound();
@@ -44,6 +45,24 @@ export default async function EditPostPage({ params }: PageProps) {
             required
             className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
           />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+            Category
+          </label>
+          <select
+            name="categoryId"
+            defaultValue={post.categoryId || ""}
+            className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
+          >
+            <option value="">No category</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="mb-4">

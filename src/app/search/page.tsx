@@ -1,27 +1,32 @@
 import Link from "next/link";
-import { getPosts } from "@/lib/actions";
+import { searchPosts } from "@/lib/actions";
 import { formatDate, extractExcerpt } from "@/lib/utils";
 import { Header } from "@/components/Header";
 
 export const revalidate = 0;
 
-export default async function Home() {
-  const posts = await getPosts();
+interface PageProps {
+  searchParams: Promise<{ q?: string }>;
+}
+
+export default async function SearchPage({ searchParams }: PageProps) {
+  const { q } = await searchParams;
+  const query = q || "";
+  const posts = query ? await searchPosts(query) : [];
 
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-900">
       <Header />
 
       <main className="max-w-3xl mx-auto px-4 py-12">
-        {posts.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-zinc-600 dark:text-zinc-400">
-              No posts yet.{" "}
-              <Link href="/admin" className="text-blue-600 hover:underline">
-                Create your first post
-              </Link>
-            </p>
-          </div>
+        <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-6">
+          {query ? `Search results for "${query}"` : "Search"}
+        </h1>
+
+        {query && posts.length === 0 ? (
+          <p className="text-zinc-600 dark:text-zinc-400">
+            No posts found matching "{query}"
+          </p>
         ) : (
           <div className="space-y-8">
             {posts.map((post) => (

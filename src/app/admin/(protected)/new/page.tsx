@@ -1,7 +1,9 @@
-import { createPost } from "@/lib/actions";
+import { createPost, getCategories } from "@/lib/actions";
 import { cookies } from "next/headers";
 
-export default function NewPostPage() {
+export default async function NewPostPage() {
+  const categories = await getCategories();
+
   async function handleSubmit(formData: FormData) {
     "use server";
     const cookieStore = await cookies();
@@ -26,6 +28,23 @@ export default function NewPostPage() {
             required
             className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
           />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+            Category
+          </label>
+          <select
+            name="categoryId"
+            className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
+          >
+            <option value="">No category</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="mb-4">

@@ -30,8 +30,16 @@ export async function getPosts() {
       slug: true,
       content: true,
       published: true,
+      viewCount: true,
       createdAt: true,
       updatedAt: true,
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+        },
+      },
     },
   });
 }
@@ -45,14 +53,22 @@ export async function getAllPosts() {
       slug: true,
       content: true,
       published: true,
+      viewCount: true,
       createdAt: true,
       updatedAt: true,
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+        },
+      },
     },
   });
 }
 
 export async function getPostBySlug(slug: string) {
-  return prisma.post.findUnique({
+  const post = await prisma.post.findUnique({
     where: { slug },
     select: {
       id: true,
@@ -60,8 +76,95 @@ export async function getPostBySlug(slug: string) {
       slug: true,
       content: true,
       published: true,
+      viewCount: true,
       createdAt: true,
       updatedAt: true,
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+        },
+      },
+    },
+  });
+
+  if (post) {
+    // Increment view count
+    await prisma.post.update({
+      where: { id: post.id },
+      data: { viewCount: { increment: 1 } },
+    });
+  }
+
+  return post;
+}
+
+export async function searchPosts(query: string) {
+  return prisma.post.findMany({
+    where: {
+      published: true,
+      OR: [
+        { title: { contains: query } },
+        { content: { contains: query } },
+      ],
+    },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      content: true,
+      published: true,
+      viewCount: true,
+      createdAt: true,
+      updatedAt: true,
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+        },
+      },
+    },
+  });
+}
+
+export async function getCategories() {
+  return prisma.category.findMany({
+    orderBy: { name: "asc" },
+  });
+}
+
+export async function getCategoryBySlug(slug: string) {
+  return prisma.category.findUnique({
+    where: { slug },
+  });
+}
+
+export async function getPostsByCategory(categorySlug: string) {
+  return prisma.post.findMany({
+    where: {
+      published: true,
+      category: { slug: categorySlug },
+    },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      content: true,
+      published: true,
+      viewCount: true,
+      createdAt: true,
+      updatedAt: true,
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+        },
+      },
     },
   });
 }
@@ -74,6 +177,7 @@ export async function createPost(formData: FormData, adminSecret: string | null)
   const title = String(formData.get("title") ?? "").trim();
   const content = String(formData.get("content") ?? "").trim();
   const published = formData.get("published") === "on";
+  const categoryId = String(formData.get("categoryId") ?? "").trim() || null;
 
   if (!title || !content) {
     throw new Error("Title and content are required");
@@ -91,6 +195,7 @@ export async function createPost(formData: FormData, adminSecret: string | null)
       slug,
       content,
       published,
+      categoryId: categoryId || undefined,
     },
   });
 
@@ -108,6 +213,7 @@ export async function updatePost(formData: FormData, adminSecret: string | null)
   const title = String(formData.get("title") ?? "").trim();
   const content = String(formData.get("content") ?? "").trim();
   const published = formData.get("published") === "on";
+  const categoryId = String(formData.get("categoryId") ?? "").trim() || null;
 
   if (!id || !title || !content) {
     throw new Error("ID, title and content are required");
@@ -137,6 +243,7 @@ export async function updatePost(formData: FormData, adminSecret: string | null)
       slug,
       content,
       published,
+      categoryId: categoryId || undefined,
     },
   });
 
