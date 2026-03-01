@@ -1,8 +1,8 @@
-import { getProfile, getCategories } from "@/lib/actions";
 import { BlogLayout } from "@/components/BlogLayout";
+import { loadBlogShellData } from "@/lib/blog-shell";
 
 export default async function AboutPage() {
-  const [profile, categories] = await Promise.all([getProfile(), getCategories()]);
+  const { profile, categories } = await loadBlogShellData();
 
   return (
     <BlogLayout profile={profile} categories={categories}>

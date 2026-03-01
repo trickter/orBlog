@@ -1,6 +1,7 @@
-import { searchPosts, getProfile, getCategories } from "@/lib/actions";
+import { searchPosts } from "@/lib/actions";
 import { BlogLayout } from "@/components/BlogLayout";
 import { PostCard } from "@/components/PostCard";
+import { loadBlogShellData } from "@/lib/blog-shell";
 
 export const revalidate = 0;
 
@@ -11,11 +12,11 @@ interface PageProps {
 export default async function SearchPage({ searchParams }: PageProps) {
   const { q } = await searchParams;
   const query = q || "";
-  const [posts, profile, categories] = await Promise.all([
+  const [posts, shell] = await Promise.all([
     query ? searchPosts(query) : Promise.resolve([]),
-    getProfile(),
-    getCategories(),
+    loadBlogShellData(),
   ]);
+  const { profile, categories } = shell;
 
   return (
     <BlogLayout profile={profile} categories={categories}>

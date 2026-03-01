@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { getProfile, getCategories } from "@/lib/actions";
 import { BlogLayout } from "@/components/BlogLayout";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { InfinitePostList } from "@/components/InfinitePostList";
 import { getPostsPage } from "@/lib/posts-page";
+import { loadBlogShellData } from "@/lib/blog-shell";
+import { FEED_PAGE_DEFAULT_LIMIT } from "@/lib/constants";
 
 export const revalidate = 0;
 
@@ -13,11 +14,11 @@ interface PageProps {
 
 export default async function Home({ searchParams }: PageProps) {
   const { category } = await searchParams;
-  const [initialPage, profile, categories] = await Promise.all([
-    getPostsPage({ categorySlug: category, limit: 10 }),
-    getProfile(),
-    getCategories(),
+  const [initialPage, shell] = await Promise.all([
+    getPostsPage({ categorySlug: category, limit: FEED_PAGE_DEFAULT_LIMIT }),
+    loadBlogShellData(),
   ]);
+  const { profile, categories } = shell;
 
   return (
     <BlogLayout profile={profile} categories={categories}>
