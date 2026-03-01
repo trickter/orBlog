@@ -1,0 +1,73 @@
+import { createPost } from "@/lib/actions";
+import { cookies } from "next/headers";
+
+export default function NewPostPage() {
+  async function handleSubmit(formData: FormData) {
+    "use server";
+    const cookieStore = await cookies();
+    const adminSecret = cookieStore.get("admin_secret")?.value ?? null;
+    await createPost(formData, adminSecret);
+  }
+
+  return (
+    <div>
+      <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-6">
+        New Post
+      </h1>
+
+      <form action={handleSubmit} className="max-w-2xl">
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+            Title
+          </label>
+          <input
+            type="text"
+            name="title"
+            required
+            className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+            Content (Markdown)
+          </label>
+          <textarea
+            name="content"
+            required
+            rows={15}
+            className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 font-mono text-sm"
+            placeholder="Write your post in Markdown..."
+          />
+        </div>
+
+        <div className="mb-6">
+          <label className="flex items-center text-zinc-700 dark:text-zinc-300">
+            <input
+              type="checkbox"
+              name="published"
+              defaultChecked
+              className="mr-2"
+            />
+            Published
+          </label>
+        </div>
+
+        <div className="flex gap-4">
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+          >
+            Create Post
+          </button>
+          <a
+            href="/admin"
+            className="px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800"
+          >
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  );
+}
