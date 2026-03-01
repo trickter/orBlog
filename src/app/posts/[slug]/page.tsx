@@ -4,6 +4,7 @@ import { getPostBySlug } from "@/lib/actions";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { formatDate } from "@/lib/utils";
 import { Header } from "@/components/Header";
+import { ViewCounter } from "@/components/ViewCounter";
 
 export const revalidate = 0;
 
@@ -22,6 +23,7 @@ export default async function PostPage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-900">
       <Header />
+      <ViewCounter postId={post.id} />
 
       <main className="max-w-3xl mx-auto px-4 py-12">
         <article>

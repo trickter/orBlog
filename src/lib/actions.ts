@@ -67,7 +67,7 @@ export async function getAllPosts() {
   });
 }
 
-export async function getPostBySlug(slug: string) {
+export async function getPostBySlug(slug: string, includeViewCount: boolean = true) {
   const post = await prisma.post.findUnique({
     where: { slug },
     select: {
@@ -89,15 +89,14 @@ export async function getPostBySlug(slug: string) {
     },
   });
 
-  if (post) {
-    // Increment view count
-    await prisma.post.update({
-      where: { id: post.id },
-      data: { viewCount: { increment: 1 } },
-    });
-  }
-
   return post;
+}
+
+export async function incrementViewCount(postId: string) {
+  await prisma.post.update({
+    where: { id: postId },
+    data: { viewCount: { increment: 1 } },
+  });
 }
 
 export async function searchPosts(query: string) {
@@ -243,7 +242,7 @@ export async function updatePost(formData: FormData, adminSecret: string | null)
       slug,
       content,
       published,
-      categoryId: categoryId || undefined,
+      ...(categoryId ? { categoryId } : { categoryId: null }),
     },
   });
 

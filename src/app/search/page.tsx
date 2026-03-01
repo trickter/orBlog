@@ -38,27 +38,26 @@ export default async function SearchPage({ searchParams }: PageProps) {
                   <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                     {post.title}
                   </h2>
-                  <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-                    {extractExcerpt(post.content)}
-                  </p>
-                  <div className="mt-4 flex items-center gap-4 text-sm text-zinc-500 dark:text-zinc-500">
-                    <time>{formatDate(post.createdAt)}</time>
-                    <span>•</span>
-                    <span>{post.viewCount} views</span>
-                    {post.category && (
-                      <>
-                        <span>•</span>
-                        <Link
-                          href={`/category/${post.category.slug}`}
-                          className="text-blue-600 dark:text-blue-400 hover:underline"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          {post.category.name}
-                        </Link>
-                      </>
-                    )}
-                  </div>
                 </Link>
+                <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+                  {extractExcerpt(post.content)}
+                </p>
+                <div className="mt-4 flex items-center gap-4 text-sm text-zinc-500 dark:text-zinc-500">
+                  <time>{formatDate(post.createdAt)}</time>
+                  <span>•</span>
+                  <span>{post.viewCount} views</span>
+                  {post.category && (
+                    <>
+                      <span>•</span>
+                      <Link
+                        href={`/category/${post.category.slug}`}
+                        className="text-blue-600 dark:text-blue-400 hover:underline"
+                      >
+                        {post.category.name}
+                      </Link>
+                    </>
+                  )}
+                </div>
               </article>
             ))}
           </div>
