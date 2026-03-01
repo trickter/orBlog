@@ -21,16 +21,19 @@ export function TopNav({ categories }: TopNavProps) {
   return (
     <header className="sticky top-0 z-50 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border-b border-zinc-200 dark:border-zinc-800">
       <div className="max-w-6xl mx-auto px-4">
-        <div className="grid grid-cols-[auto,1fr,auto] items-center gap-4 h-14">
-          <Link href="/" className="font-bold text-xl text-zinc-900 dark:text-zinc-100">
+        <div className="grid h-16 grid-cols-[auto_minmax(0,24rem)_auto] items-center gap-4">
+          <Link
+            href="/"
+            className="justify-self-start font-bold text-xl text-zinc-900 dark:text-zinc-100"
+          >
             orBlog
           </Link>
 
-          <div className="flex items-center justify-center min-w-0">
+          <div className="min-w-0 w-full">
             <SearchBox />
           </div>
 
-          <nav className="flex items-center gap-2">
+          <nav className="justify-self-end flex items-center gap-2 whitespace-nowrap">
             <div className="relative">
               <button
                 onClick={() => setShowCategories(!showCategories)}
@@ -41,13 +44,6 @@ export function TopNav({ categories }: TopNavProps) {
               </button>
               {showCategories && (
                 <div className="absolute top-full right-0 mt-1 w-48 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-lg py-1">
-                  <Link
-                    href="/"
-                    className="block px-4 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700"
-                    onClick={() => setShowCategories(false)}
-                  >
-                    全部文章
-                  </Link>
                   {categories.map((cat) => (
                     <Link
                       key={cat.id}
