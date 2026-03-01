@@ -1,5 +1,5 @@
-import { Sidebar } from "@/components/Sidebar";
-import { TopNav } from "@/components/TopNav";
+import { Sidebar } from '@/components/Sidebar';
+import { TopNav } from '@/components/TopNav';
 
 interface Profile {
   name: string;
@@ -32,9 +32,7 @@ export function BlogLayout({ children, profile, categories }: BlogLayoutProps) {
           <Sidebar profile={profile} />
 
           {/* Right Content */}
-          <main className="flex-1 min-w-0">
-            {children}
-          </main>
+          <main className="flex-1 min-w-0">{children}</main>
         </div>
       </div>
     </div>

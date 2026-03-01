@@ -33,7 +33,7 @@ export async function extractZipFile(file: File): Promise<ZipImportResult> {
 
   // Find images from images/ or image/ directory (supports Windows backslashes)
   const images: ZipImage[] = [];
-  const imageDirs = new Set(["images", "image", "img", "assets"]);
+  const imageDirs = new Set(['images', 'image', 'img', 'assets']);
 
   for (const zipPath of Object.keys(zip.files)) {
     const entry = zip.files[zipPath];
@@ -41,26 +41,28 @@ export async function extractZipFile(file: File): Promise<ZipImportResult> {
       continue;
     }
 
-    const normalizedPath = zipPath.replace(/\\/g, "/");
-    const parts = normalizedPath.split("/").filter(Boolean);
-    const dirIndex = parts.findIndex((part) => imageDirs.has(part.toLowerCase()));
+    const normalizedPath = zipPath.replace(/\\/g, '/');
+    const parts = normalizedPath.split('/').filter(Boolean);
+    const dirIndex = parts.findIndex((part) =>
+      imageDirs.has(part.toLowerCase())
+    );
 
     if (dirIndex === -1) {
       continue;
     }
 
-    const relativeName = parts.slice(dirIndex + 1).join("/");
+    const relativeName = parts.slice(dirIndex + 1).join('/');
     if (!relativeName) {
       continue;
     }
 
-    const blob = await entry.async("blob");
+    const blob = await entry.async('blob');
     const mimeType = getMimeType(relativeName);
     const arrayBuffer = await blob.arrayBuffer();
     const base64 = btoa(
       new Uint8Array(arrayBuffer).reduce(
         (data, byte) => data + String.fromCharCode(byte),
-        ""
+        ''
       )
     );
 

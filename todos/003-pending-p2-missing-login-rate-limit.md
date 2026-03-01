@@ -1,7 +1,7 @@
 ---
 status: completed
 priority: p2
-issue_id: "003"
+issue_id: '003'
 tags: [code-review, security, abuse-prevention, nextjs]
 dependencies: []
 ---
@@ -24,10 +24,12 @@ The admin login API checks a shared secret without rate limiting, lockout, or de
 **Approach:** Apply rate limiter middleware or endpoint-level throttle (e.g., max attempts/minute).
 
 **Pros:**
+
 - Fast mitigation
 - Minimal UX impact
 
 **Cons:**
+
 - Needs shared store in multi-instance deployments
 
 **Effort:** Small
@@ -41,9 +43,11 @@ The admin login API checks a shared secret without rate limiting, lockout, or de
 **Approach:** Introduce incremental delay for failed attempts and temporary lockout.
 
 **Pros:**
+
 - Slows brute-force significantly
 
 **Cons:**
+
 - Can affect legitimate retries
 
 **Effort:** Small
@@ -52,10 +56,10 @@ The admin login API checks a shared secret without rate limiting, lockout, or de
 
 ## Recommended Action
 
-
 ## Technical Details
 
 **Affected files:**
+
 - `src/app/admin/api/login/route.ts`
 
 ## Resources
@@ -76,8 +80,10 @@ The admin login API checks a shared secret without rate limiting, lockout, or de
 **By:** Codex
 
 **Actions:**
+
 - Reviewed login handler for abuse controls
 - Confirmed absence of throttling/lockout mechanisms
 
 **Learnings:**
+
 - Shared-secret login endpoints need explicit anti-automation controls

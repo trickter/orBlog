@@ -1,7 +1,7 @@
 ---
 status: completed
 priority: p2
-issue_id: "002"
+issue_id: '002'
 tags: [code-review, security, session-management, nextjs]
 dependencies: []
 ---
@@ -25,10 +25,12 @@ The login endpoint writes the raw admin secret to a cookie, then layout compares
 **Approach:** On successful login, issue signed session token (HMAC/JWT/server session id) instead of storing admin secret.
 
 **Pros:**
+
 - Secret is never persisted client-side
 - Supports rotation/invalidation
 
 **Cons:**
+
 - Requires session signing logic
 
 **Effort:** Medium
@@ -42,10 +44,12 @@ The login endpoint writes the raw admin secret to a cookie, then layout compares
 **Approach:** Store short random session ID in cookie and map it server-side.
 
 **Pros:**
+
 - Strongest control over invalidation
 - No secret material in cookies
 
 **Cons:**
+
 - Requires persistence layer/cache
 
 **Effort:** Medium
@@ -54,10 +58,10 @@ The login endpoint writes the raw admin secret to a cookie, then layout compares
 
 ## Recommended Action
 
-
 ## Technical Details
 
 **Affected files:**
+
 - `src/app/admin/api/login/route.ts`
 - `src/app/admin/(protected)/layout.tsx`
 
@@ -79,8 +83,10 @@ The login endpoint writes the raw admin secret to a cookie, then layout compares
 **By:** Codex
 
 **Actions:**
+
 - Reviewed login/session implementation
 - Flagged credential-in-cookie anti-pattern
 
 **Learnings:**
+
 - Auth state should be decoupled from primary credential values

@@ -7,11 +7,11 @@ function safeDecodeURIComponent(value: string): string {
 }
 
 function normalizeImagePath(value: string): string {
-  const withoutQuery = value.split("?")[0]?.split("#")[0] ?? value;
+  const withoutQuery = value.split('?')[0]?.split('#')[0] ?? value;
   const normalized = safeDecodeURIComponent(withoutQuery)
-    .replace(/\\/g, "/")
-    .replace(/^\.\/+/, "")
-    .replace(/^\/+/, "");
+    .replace(/\\/g, '/')
+    .replace(/^\.\/+/, '')
+    .replace(/^\/+/, '');
   return normalized.trim();
 }
 
@@ -24,10 +24,10 @@ export function imageLookupKeys(value: string): string[] {
   const lower = normalized.toLowerCase();
   const keys = new Set<string>([lower]);
 
-  const withoutKnownPrefix = lower.replace(/^(images?|img|assets)\//, "");
+  const withoutKnownPrefix = lower.replace(/^(images?|img|assets)\//, '');
   keys.add(withoutKnownPrefix);
 
-  const basename = withoutKnownPrefix.split("/").pop();
+  const basename = withoutKnownPrefix.split('/').pop();
   if (basename) {
     keys.add(basename);
   }
@@ -45,13 +45,13 @@ export function rewriteMarkdownImageLinks(
       const trimmedTarget = String(rawTarget).trim();
       const targetMatch = trimmedTarget.match(/^(\S+)(\s+["'][^"']*["'])?$/);
       const originalUrl = targetMatch ? targetMatch[1] : trimmedTarget;
-      const suffix = targetMatch?.[2] ?? "";
+      const suffix = targetMatch?.[2] ?? '';
 
       if (
-        originalUrl.startsWith("http://") ||
-        originalUrl.startsWith("https://") ||
-        originalUrl.startsWith("data:") ||
-        originalUrl.startsWith("blob:")
+        originalUrl.startsWith('http://') ||
+        originalUrl.startsWith('https://') ||
+        originalUrl.startsWith('data:') ||
+        originalUrl.startsWith('blob:')
       ) {
         return full;
       }

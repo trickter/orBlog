@@ -1,7 +1,7 @@
 ---
 status: completed
 priority: p1
-issue_id: "001"
+issue_id: '001'
 tags: [code-review, security, authentication, nextjs]
 dependencies: []
 ---
@@ -25,10 +25,12 @@ Admin route protection compares cookie value to `process.env.ADMIN_SECRET` direc
 **Approach:** Explicitly reject when env is missing or empty, then validate cookie against env.
 
 **Pros:**
+
 - Immediate protection
 - Minimal code change
 
 **Cons:**
+
 - Admin becomes unavailable until env is configured
 
 **Effort:** Small
@@ -42,10 +44,12 @@ Admin route protection compares cookie value to `process.env.ADMIN_SECRET` direc
 **Approach:** Create one `requireAdmin()` helper used by layout and all server actions.
 
 **Pros:**
+
 - Removes duplicated auth logic
 - Reduces drift risk
 
 **Cons:**
+
 - Slight refactor across files
 
 **Effort:** Medium
@@ -54,10 +58,10 @@ Admin route protection compares cookie value to `process.env.ADMIN_SECRET` direc
 
 ## Recommended Action
 
-
 ## Technical Details
 
 **Affected files:**
+
 - `src/app/admin/(protected)/layout.tsx`
 - `src/lib/actions.ts`
 - `src/app/admin/api/login/route.ts`
@@ -80,9 +84,11 @@ Admin route protection compares cookie value to `process.env.ADMIN_SECRET` direc
 **By:** Codex
 
 **Actions:**
+
 - Reviewed admin layout auth branch condition
 - Validated undefined comparison behavior
 - Classified as merge-blocking security risk
 
 **Learnings:**
+
 - Env-dependent auth checks must explicitly fail-closed

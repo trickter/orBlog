@@ -1,10 +1,10 @@
-import Link from "next/link";
-import { BlogLayout } from "@/components/BlogLayout";
-import { CategoryFilter } from "@/components/CategoryFilter";
-import { InfinitePostList } from "@/components/InfinitePostList";
-import { getPostsPage } from "@/lib/posts-page";
-import { loadBlogShellData } from "@/lib/blog-shell";
-import { FEED_PAGE_DEFAULT_LIMIT } from "@/lib/constants";
+import Link from 'next/link';
+import { BlogLayout } from '@/components/BlogLayout';
+import { CategoryFilter } from '@/components/CategoryFilter';
+import { InfinitePostList } from '@/components/InfinitePostList';
+import { getPostsPage } from '@/lib/posts-page';
+import { loadBlogShellData } from '@/lib/blog-shell';
+import { FEED_PAGE_DEFAULT_LIMIT } from '@/lib/constants';
 
 export const revalidate = 0;
 
@@ -22,14 +22,12 @@ export default async function Home({ searchParams }: PageProps) {
 
   return (
     <BlogLayout profile={profile} categories={categories}>
-      {categories.length > 0 && (
-        <CategoryFilter categories={categories} />
-      )}
+      {categories.length > 0 && <CategoryFilter categories={categories} />}
 
       {initialPage.items.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-zinc-600 dark:text-zinc-400">
-            No posts yet.{" "}
+            No posts yet.{' '}
             <Link href="/admin" className="text-blue-600 hover:underline">
               Create your first post
             </Link>

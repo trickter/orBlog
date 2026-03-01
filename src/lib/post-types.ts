@@ -1,5 +1,5 @@
-import { Prisma } from "@prisma/client";
-import { postDropdownSelect, postWithCategorySelect } from "@/lib/post-select";
+import { Prisma } from '@prisma/client';
+import { postDropdownSelect, postWithCategorySelect } from '@/lib/post-select';
 
 export type PostWithCategory = Prisma.PostGetPayload<{
   select: typeof postWithCategorySelect;

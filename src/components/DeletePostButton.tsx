@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { DeleteButton } from "@/components/DeleteButton";
+import { DeleteButton } from '@/components/DeleteButton';
 
 interface DeletePostButtonProps {
   postId: string;
@@ -8,8 +8,10 @@ interface DeletePostButtonProps {
   onDelete: (id: string, session: string | null) => Promise<void>;
 }
 
-export function DeletePostButton({ postId, session, onDelete }: DeletePostButtonProps) {
-  return (
-    <DeleteButton onDelete={() => onDelete(postId, session)} />
-  );
+export function DeletePostButton({
+  postId,
+  session,
+  onDelete,
+}: DeletePostButtonProps) {
+  return <DeleteButton onDelete={() => onDelete(postId, session)} />;
 }

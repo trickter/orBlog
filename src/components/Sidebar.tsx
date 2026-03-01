@@ -1,4 +1,4 @@
-import { Github, Twitter, Mail } from "lucide-react";
+import { Github, Twitter, Mail } from 'lucide-react';
 
 interface Profile {
   name: string;

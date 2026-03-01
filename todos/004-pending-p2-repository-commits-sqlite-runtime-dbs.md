@@ -1,7 +1,7 @@
 ---
 status: completed
 priority: p2
-issue_id: "004"
+issue_id: '004'
 tags: [code-review, security, operations, database]
 dependencies: []
 ---
@@ -24,10 +24,12 @@ Runtime database artifacts are tracked in repository history, which risks accide
 **Approach:** Add ignore rules and remove tracked files while keeping migration files.
 
 **Pros:**
+
 - Prevents future data leakage
 - Cleaner diffs and smaller repo churn
 
 **Cons:**
+
 - Requires migration/bootstrap docs for local setup
 
 **Effort:** Small
@@ -41,9 +43,11 @@ Runtime database artifacts are tracked in repository history, which risks accide
 **Approach:** Keep one clearly named demo DB and prohibit runtime DB commits.
 
 **Pros:**
+
 - Easy demo bootstrap
 
 **Cons:**
+
 - Ongoing sanitization burden
 
 **Effort:** Medium
@@ -52,10 +56,10 @@ Runtime database artifacts are tracked in repository history, which risks accide
 
 ## Recommended Action
 
-
 ## Technical Details
 
 **Affected files:**
+
 - `dev.db`
 - `prisma/dev.db`
 - `.gitignore`
@@ -77,8 +81,10 @@ Runtime database artifacts are tracked in repository history, which risks accide
 **By:** Codex
 
 **Actions:**
+
 - Audited tracked artifacts for runtime state files
 - Found SQLite DB binaries in versioned files
 
 **Learnings:**
+
 - Migration SQL should be source of truth, not mutable DB binaries

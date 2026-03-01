@@ -1,10 +1,7 @@
-import { prisma } from "@/lib/prisma";
-import { postWithCategorySelect } from "@/lib/post-select";
-import { PostWithCategory } from "@/lib/post-types";
-import {
-  FEED_PAGE_DEFAULT_LIMIT,
-  FEED_PAGE_MAX_LIMIT,
-} from "@/lib/constants";
+import { prisma } from '@/lib/prisma';
+import { postWithCategorySelect } from '@/lib/post-select';
+import { PostWithCategory } from '@/lib/post-types';
+import { FEED_PAGE_DEFAULT_LIMIT, FEED_PAGE_MAX_LIMIT } from '@/lib/constants';
 
 interface GetPostsPageOptions {
   categorySlug?: string;
@@ -30,7 +27,7 @@ export async function getPostsPage({
       published: true,
       ...(categorySlug ? { category: { slug: categorySlug } } : {}),
     },
-    orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+    orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
     take: pageSize + 1,
     ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
     select: postWithCategorySelect,
@@ -38,7 +35,7 @@ export async function getPostsPage({
 
   const hasMore = posts.length > pageSize;
   const items = hasMore ? posts.slice(0, pageSize) : posts;
-  const nextCursor = hasMore ? items[items.length - 1]?.id ?? null : null;
+  const nextCursor = hasMore ? (items[items.length - 1]?.id ?? null) : null;
 
   return {
     items,

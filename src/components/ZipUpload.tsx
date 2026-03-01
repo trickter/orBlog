@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useState, useRef } from "react";
-import { extractZipFile, ZipImportResult } from "@/lib/zip-import";
-import { ZIP_UPLOAD_MAX_SIZE_BYTES } from "@/lib/constants";
+import { useState, useRef } from 'react';
+import { extractZipFile, ZipImportResult } from '@/lib/zip-import';
+import { ZIP_UPLOAD_MAX_SIZE_BYTES } from '@/lib/constants';
 
 interface ZipUploadProps {
   onExtract: (result: ZipImportResult) => void;
@@ -17,14 +17,14 @@ export function ZipUpload({ onExtract }: ZipUploadProps) {
   const handleFile = async (file: File) => {
     setError(null);
 
-    if (!file.name.toLowerCase().endsWith(".zip")) {
-      setError("Please select a .zip file");
+    if (!file.name.toLowerCase().endsWith('.zip')) {
+      setError('Please select a .zip file');
       return;
     }
 
     // Limit file size to configured threshold
     if (file.size > ZIP_UPLOAD_MAX_SIZE_BYTES) {
-      setError("File size must be less than 10MB");
+      setError('File size must be less than 10MB');
       return;
     }
 
@@ -34,7 +34,9 @@ export function ZipUpload({ onExtract }: ZipUploadProps) {
       const result = await extractZipFile(file);
       onExtract(result);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to extract zip file");
+      setError(
+        err instanceof Error ? err.message : 'Failed to extract zip file'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -64,8 +66,8 @@ export function ZipUpload({ onExtract }: ZipUploadProps) {
       <div
         className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
           dragActive
-            ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-            : "border-zinc-300 dark:border-zinc-600 hover:border-zinc-400 dark:hover:border-zinc-500"
+            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+            : 'border-zinc-300 dark:border-zinc-600 hover:border-zinc-400 dark:hover:border-zinc-500'
         }`}
         onDragOver={(e) => {
           e.preventDefault();
@@ -125,7 +127,7 @@ export function ZipUpload({ onExtract }: ZipUploadProps) {
             <div className="text-sm text-zinc-600 dark:text-zinc-400">
               <span className="font-medium text-blue-600 dark:text-blue-400">
                 Click to upload
-              </span>{" "}
+              </span>{' '}
               or drag and drop
             </div>
             <div className="text-xs text-zinc-500 dark:text-zinc-500">

@@ -11,6 +11,7 @@ origin: docs/brainstorms/2026-03-01-personal-blog-brainstorm.md
 ## Overview
 
 将当前顶部导航栏调整为以下布局：
+
 - 左侧品牌文案改为 `orBlog`
 - 中间放置搜索栏
 - 最右侧放置 `分类` 与 `关于`（中文显示）
@@ -20,6 +21,7 @@ origin: docs/brainstorms/2026-03-01-personal-blog-brainstorm.md
 ## Problem Statement / Motivation
 
 当前 `TopNav` 信息层级与目标设计不一致：
+
 - 品牌名不是目标文案
 - 搜索栏位置不在视觉中心
 - 菜单项文案为英文且不在最右侧
@@ -33,6 +35,7 @@ origin: docs/brainstorms/2026-03-01-personal-blog-brainstorm.md
 发现并沿用 brainstorm：`docs/brainstorms/2026-03-01-personal-blog-brainstorm.md`（2026-03-01）。
 
 继承的关键决策：
+
 - 继续使用 Next.js + Tailwind 的单仓模式（see brainstorm: docs/brainstorms/2026-03-01-personal-blog-brainstorm.md）
 - 博客为自托管个人站，优先简洁可维护 UI（see brainstorm: docs/brainstorms/2026-03-01-personal-blog-brainstorm.md）
 - 保持现有信息架构（首页/分类/关于/搜索）并做导航可用性优化（see brainstorm: docs/brainstorms/2026-03-01-personal-blog-brainstorm.md）
@@ -62,6 +65,7 @@ origin: docs/brainstorms/2026-03-01-personal-blog-brainstorm.md
 3. 右区（菜单）：`分类`、`关于`（中文）
 
 其中：
+
 - `分类` 保留现有 dropdown 行为（可展开类别列表）
 - `关于` 保持链接到 `/about`
 - 文案统一中文（除品牌名 `orBlog`）
@@ -93,6 +97,7 @@ origin: docs/brainstorms/2026-03-01-personal-blog-brainstorm.md
 ## SpecFlow Analysis (Manual)
 
 针对该需求的关键流程与边界：
+
 - Happy path：导航展示正确，搜索可提交，分类/关于可跳转
 - Edge case：
   - 类别为空时，`分类` dropdown 行为需稳定（可显示 “全部文章” 或空态）

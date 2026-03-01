@@ -1,7 +1,7 @@
-import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
-import { updatePost, getCategories } from "@/lib/actions";
-import { cookies } from "next/headers";
+import { notFound } from 'next/navigation';
+import { prisma } from '@/lib/prisma';
+import { updatePost, getCategories } from '@/lib/actions';
+import { cookies } from 'next/headers';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -19,9 +19,9 @@ export default async function EditPostPage({ params }: PageProps) {
   }
 
   async function handleSubmit(formData: FormData) {
-    "use server";
+    'use server';
     const cookieStore = await cookies();
-    const session = cookieStore.get("admin_session")?.value ?? null;
+    const session = cookieStore.get('admin_session')?.value ?? null;
     await updatePost(formData, session);
   }
 
@@ -53,7 +53,7 @@ export default async function EditPostPage({ params }: PageProps) {
           </label>
           <select
             name="categoryId"
-            defaultValue={post.categoryId || ""}
+            defaultValue={post.categoryId || ''}
             className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
           >
             <option value="">No category</option>

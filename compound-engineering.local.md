@@ -1,5 +1,11 @@
 ---
-review_agents: [kieran-typescript-reviewer, code-simplicity-reviewer, security-sentinel, performance-oracle]
+review_agents:
+  [
+    kieran-typescript-reviewer,
+    code-simplicity-reviewer,
+    security-sentinel,
+    performance-oracle,
+  ]
 plan_review_agents: [kieran-typescript-reviewer, code-simplicity-reviewer]
 ---
 

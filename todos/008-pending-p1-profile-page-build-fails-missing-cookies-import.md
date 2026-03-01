@@ -1,7 +1,7 @@
 ---
 status: pending
 priority: p1
-issue_id: "008"
+issue_id: '008'
 tags: [code-review, quality, build, nextjs, admin]
 dependencies: []
 ---
@@ -26,10 +26,12 @@ The admin profile page uses `cookies()` inside a server action but does not impo
 **Approach:** Add `import { cookies } from "next/headers";` to the profile page file.
 
 **Pros:**
+
 - Minimal fix
 - Restores successful build quickly
 
 **Cons:**
+
 - No architectural cleanup
 
 **Effort:** Small
@@ -43,10 +45,12 @@ The admin profile page uses `cookies()` inside a server action but does not impo
 **Approach:** Create helper for reading `admin_session` in server actions and reuse across admin pages.
 
 **Pros:**
+
 - Reduces copy/paste mistakes
 - Better maintainability
 
 **Cons:**
+
 - Slight refactor scope increase
 
 **Effort:** Medium
@@ -55,10 +59,10 @@ The admin profile page uses `cookies()` inside a server action but does not impo
 
 ## Recommended Action
 
-
 ## Technical Details
 
 **Affected files:**
+
 - `src/app/admin/(protected)/profile/page.tsx`
 
 ## Resources
@@ -78,8 +82,10 @@ The admin profile page uses `cookies()` inside a server action but does not impo
 **By:** Codex
 
 **Actions:**
+
 - Ran build on target branch
 - Collected failing file/line evidence
 
 **Learnings:**
+
 - Admin server actions currently rely on duplicated session-read snippets; helperization would reduce recurrence

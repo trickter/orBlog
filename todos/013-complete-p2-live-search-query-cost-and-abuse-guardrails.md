@@ -1,7 +1,7 @@
 ---
 status: complete
 priority: p2
-issue_id: "013"
+issue_id: '013'
 tags: [code-review, performance, security, prisma, sqlite]
 dependencies: []
 ---
@@ -26,11 +26,13 @@ The new live-search endpoint increases query frequency significantly, but server
 **Approach:** Add query length cap and simple normalization; optionally skip `content` field for dropdown and search only title.
 
 **Pros:**
+
 - Very small change
 - Immediate reduction in query cost
 - Lower abuse surface
 
 **Cons:**
+
 - May reduce recall for some queries
 
 **Effort:** 1-2 hours
@@ -44,10 +46,12 @@ The new live-search endpoint increases query frequency significantly, but server
 **Approach:** Route handler with per-IP/session rate limits and optimized payload for suggestions.
 
 **Pros:**
+
 - Better abuse control and monitoring
 - Cleaner separation between full search and typeahead
 
 **Cons:**
+
 - More implementation complexity
 - Requires additional infra decisions for rate limiting
 
@@ -57,18 +61,20 @@ The new live-search endpoint increases query frequency significantly, but server
 
 ## Recommended Action
 
-
 ## Technical Details
 
 **Affected files:**
+
 - `src/components/SearchBox.tsx:23-41`
 - `src/lib/actions.ts:135-158`
 - `prisma/schema.prisma:13-26`
 
 **Related components:**
+
 - `src/app/search/page.tsx` (full search behavior)
 
 **Database changes (if any):**
+
 - Migration needed? Potentially, if adding indexes/FTS in later iteration
 
 ## Resources
@@ -90,11 +96,13 @@ The new live-search endpoint increases query frequency significantly, but server
 **By:** Codex
 
 **Actions:**
+
 - Assessed request frequency from client debounce behavior.
 - Reviewed Prisma query scope and schema indexing context.
 - Documented mitigation options balancing speed vs robustness.
 
 **Learnings:**
+
 - Live-search introduces a different load profile from classic submit-based search and needs explicit backend guardrails.
 
 ## Notes
@@ -106,7 +114,9 @@ The new live-search endpoint increases query frequency significantly, but server
 **By:** Codex
 
 **Actions:**
+
 - Implemented fix in code and validated via `npm run lint` + `npm run build`.
 
 **Learnings:**
+
 - Issue resolved in current branch.

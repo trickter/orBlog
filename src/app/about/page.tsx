@@ -1,5 +1,5 @@
-import { BlogLayout } from "@/components/BlogLayout";
-import { loadBlogShellData } from "@/lib/blog-shell";
+import { BlogLayout } from '@/components/BlogLayout';
+import { loadBlogShellData } from '@/lib/blog-shell';
 
 export default async function AboutPage() {
   const { profile, categories } = await loadBlogShellData();
@@ -9,8 +9,8 @@ export default async function AboutPage() {
       <article className="prose prose-slate dark:prose-invert max-w-none">
         <h1>About</h1>
         <p>
-          Welcome to my blog! I&apos;m a full-stack developer passionate about building
-          great web applications.
+          Welcome to my blog! I&apos;m a full-stack developer passionate about
+          building great web applications.
         </p>
         <p>
           This blog is built with Next.js, Tailwind CSS, and Prisma. It features

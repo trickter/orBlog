@@ -1,7 +1,7 @@
 ---
 status: completed
 priority: p1
-issue_id: "007"
+issue_id: '007'
 tags: [code-review, browser-test, p1, nextjs, admin]
 dependencies: []
 ---
@@ -29,10 +29,12 @@ End-to-end browser testing found that authenticated access to `/admin` fails wit
 **Approach:** Replace inline `onClick` confirm logic with server-safe approach (e.g., dedicated client component wrapper for delete button, or native form flow without client handler).
 
 **Pros:**
+
 - Fixes runtime crash
 - Keeps RSC boundaries valid
 
 **Cons:**
+
 - Requires slight restructuring of delete UX
 
 **Effort:** Small
@@ -46,9 +48,11 @@ End-to-end browser testing found that authenticated access to `/admin` fails wit
 **Approach:** Move interactive row/buttons to a `use client` component and pass server action references safely.
 
 **Pros:**
+
 - Clear separation of server/client responsibilities
 
 **Cons:**
+
 - Slightly larger refactor
 
 **Effort:** Medium
@@ -57,13 +61,14 @@ End-to-end browser testing found that authenticated access to `/admin` fails wit
 
 ## Recommended Action
 
-
 ## Technical Details
 
 **Affected files:**
+
 - `src/app/admin/(protected)/page.tsx`
 
 **Evidence artifacts:**
+
 - `test-artifacts/browser/admin-list-with-post-full.png`
 
 ## Resources
@@ -85,9 +90,11 @@ End-to-end browser testing found that authenticated access to `/admin` fails wit
 **By:** Codex
 
 **Actions:**
+
 - Executed agent-browser E2E flows on changed routes
 - Captured runtime failure on authenticated `/admin`
 - Saved screenshot and logged server/runtime error details
 
 **Learnings:**
+
 - RSC boundary violation in admin table action button currently breaks the page at runtime

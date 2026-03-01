@@ -1,7 +1,7 @@
 ---
 status: pending
 priority: p1
-issue_id: "009"
+issue_id: '009'
 tags: [code-review, runtime, nextjs, react-server-components, admin]
 dependencies: []
 ---
@@ -26,10 +26,12 @@ dependencies: []
 **Approach:** Reuse/extend `DeletePostButton` pattern for categories. Keep server action as prop, keep confirm state in client component.
 
 **Pros:**
+
 - Aligns with RSC boundary rules
 - Consistent with existing code pattern
 
 **Cons:**
+
 - Adds one small component
 
 **Effort:** Small
@@ -43,9 +45,11 @@ dependencies: []
 **Approach:** Keep pure server form submit without interactive confirmation.
 
 **Pros:**
+
 - Simplest implementation
 
 **Cons:**
+
 - Worse UX and accidental deletion risk
 
 **Effort:** Small
@@ -54,10 +58,10 @@ dependencies: []
 
 ## Recommended Action
 
-
 ## Technical Details
 
 **Affected files:**
+
 - `src/app/admin/(protected)/categories/page.tsx`
 - (likely new) `src/components/DeleteCategoryButton.tsx`
 
@@ -79,8 +83,10 @@ dependencies: []
 **By:** Codex
 
 **Actions:**
+
 - Reviewed categories admin table action implementation
 - Flagged server/client boundary violation pattern
 
 **Learnings:**
+
 - Interactive confirmation logic must live in Client Components in this stack

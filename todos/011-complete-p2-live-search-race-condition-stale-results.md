@@ -1,7 +1,7 @@
 ---
 status: complete
 priority: p2
-issue_id: "011"
+issue_id: '011'
 tags: [code-review, quality, frontend, reliability, typescript]
 dependencies: []
 ---
@@ -25,11 +25,13 @@ Live search requests in the top nav can resolve out of order. Older requests can
 **Approach:** Keep an incrementing request id in a `useRef`, capture id before request, and only apply results if id matches latest.
 
 **Pros:**
+
 - Minimal code change
 - Prevents stale writes reliably
 - No API contract changes
 
 **Cons:**
+
 - Slightly more client state logic
 
 **Effort:** 30-60 minutes
@@ -43,10 +45,12 @@ Live search requests in the top nav can resolve out of order. Older requests can
 **Approach:** Move live search to route handler and call via `fetch` with `AbortController` on input changes.
 
 **Pros:**
+
 - True request cancellation
 - Better future observability and caching controls
 
 **Cons:**
+
 - Adds endpoint and refactor from server action call
 - More moving parts
 
@@ -56,16 +60,18 @@ Live search requests in the top nav can resolve out of order. Older requests can
 
 ## Recommended Action
 
-
 ## Technical Details
 
 **Affected files:**
+
 - `src/components/SearchBox.tsx:23-44`
 
 **Related components:**
+
 - `src/components/TopNav.tsx`
 
 **Database changes (if any):**
+
 - Migration needed? No
 
 ## Resources
@@ -87,11 +93,13 @@ Live search requests in the top nav can resolve out of order. Older requests can
 **By:** Codex
 
 **Actions:**
+
 - Reviewed live-search control flow in `SearchBox`.
 - Identified missing latest-request guard around async updates.
 - Documented reproducible race scenario and fix options.
 
 **Learnings:**
+
 - Debounce alone reduces call count but does not prevent stale async writes.
 
 ## Notes
@@ -103,7 +111,9 @@ Live search requests in the top nav can resolve out of order. Older requests can
 **By:** Codex
 
 **Actions:**
+
 - Implemented fix in code and validated via `npm run lint` + `npm run build`.
 
 **Learnings:**
+
 - Issue resolved in current branch.

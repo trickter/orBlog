@@ -1,8 +1,8 @@
-import { notFound } from "next/navigation";
-import { getCategoryBySlug, getPostsByCategory } from "@/lib/actions";
-import { BlogLayout } from "@/components/BlogLayout";
-import { PostCard } from "@/components/PostCard";
-import { loadBlogShellData } from "@/lib/blog-shell";
+import { notFound } from 'next/navigation';
+import { getCategoryBySlug, getPostsByCategory } from '@/lib/actions';
+import { BlogLayout } from '@/components/BlogLayout';
+import { PostCard } from '@/components/PostCard';
+import { loadBlogShellData } from '@/lib/blog-shell';
 
 export const revalidate = 0;
 

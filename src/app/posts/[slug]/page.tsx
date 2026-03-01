@@ -1,11 +1,11 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { getPostBySlug } from "@/lib/actions";
-import { MarkdownRenderer } from "@/components/MarkdownRenderer";
-import { formatDate } from "@/lib/utils";
-import { BlogLayout } from "@/components/BlogLayout";
-import { ViewCounter } from "@/components/ViewCounter";
-import { loadBlogShellData } from "@/lib/blog-shell";
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { getPostBySlug } from '@/lib/actions';
+import { MarkdownRenderer } from '@/components/MarkdownRenderer';
+import { formatDate } from '@/lib/utils';
+import { BlogLayout } from '@/components/BlogLayout';
+import { ViewCounter } from '@/components/ViewCounter';
+import { loadBlogShellData } from '@/lib/blog-shell';
 
 export const revalidate = 0;
 

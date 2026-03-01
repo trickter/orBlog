@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { PostCard } from "@/components/PostCard";
-import { PostCardData } from "@/lib/post-types";
-import { FEED_PAGE_DEFAULT_LIMIT } from "@/lib/constants";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { PostCard } from '@/components/PostCard';
+import { PostCardData } from '@/lib/post-types';
+import { FEED_PAGE_DEFAULT_LIMIT } from '@/lib/constants';
 
 type PostItem = PostCardData;
 
@@ -48,20 +48,20 @@ export function InfinitePostList({
       setError(null);
 
       const params = new URLSearchParams();
-      params.set("limit", `${FEED_PAGE_DEFAULT_LIMIT}`);
+      params.set('limit', `${FEED_PAGE_DEFAULT_LIMIT}`);
       if (category) {
-        params.set("category", category);
+        params.set('category', category);
       }
       if (nextCursor) {
-        params.set("cursor", nextCursor);
+        params.set('cursor', nextCursor);
       }
 
       const response = await fetch(`/api/posts?${params.toString()}`, {
-        cache: "no-store",
+        cache: 'no-store',
       });
 
       if (!response.ok) {
-        throw new Error("load_failed");
+        throw new Error('load_failed');
       }
 
       const data = (await response.json()) as PostsPageResponse;
@@ -80,7 +80,7 @@ export function InfinitePostList({
       if (requestIdRef.current !== requestId) {
         return;
       }
-      setError("加载失败，请重试");
+      setError('加载失败，请重试');
     } finally {
       if (requestIdRef.current === requestId) {
         setLoading(false);

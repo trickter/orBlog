@@ -1,12 +1,12 @@
-import Link from "next/link";
-import { createCategory } from "@/lib/actions";
-import { cookies } from "next/headers";
+import Link from 'next/link';
+import { createCategory } from '@/lib/actions';
+import { cookies } from 'next/headers';
 
 export default function NewCategoryPage() {
   async function handleSubmit(formData: FormData) {
-    "use server";
+    'use server';
     const cookieStore = await cookies();
-    const session = cookieStore.get("admin_session")?.value ?? null;
+    const session = cookieStore.get('admin_session')?.value ?? null;
     await createCategory(formData, session);
   }
 

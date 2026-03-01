@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 interface Category {
   id: string;
@@ -15,7 +15,7 @@ interface CategoryFilterProps {
 
 export function CategoryFilter({ categories }: CategoryFilterProps) {
   const searchParams = useSearchParams();
-  const currentCategory = searchParams.get("category");
+  const currentCategory = searchParams.get('category');
 
   return (
     <div className="flex gap-2 overflow-x-auto pb-4 mb-4 scrollbar-hide">
@@ -23,8 +23,8 @@ export function CategoryFilter({ categories }: CategoryFilterProps) {
         href="/"
         className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
           !currentCategory
-            ? "bg-blue-600 text-white"
-            : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+            ? 'bg-blue-600 text-white'
+            : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700'
         }`}
       >
         All
@@ -35,8 +35,8 @@ export function CategoryFilter({ categories }: CategoryFilterProps) {
           href={`/?category=${cat.slug}`}
           className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
             currentCategory === cat.slug
-              ? "bg-blue-600 text-white"
-              : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+              ? 'bg-blue-600 text-white'
+              : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700'
           }`}
         >
           {cat.name}

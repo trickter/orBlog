@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { deleteCategoryFromClient } from "@/lib/actions";
-import { useRouter } from "next/navigation";
-import { DeleteButton as ConfirmDeleteButton } from "@/components/DeleteButton";
+import { deleteCategoryFromClient } from '@/lib/actions';
+import { useRouter } from 'next/navigation';
+import { DeleteButton as ConfirmDeleteButton } from '@/components/DeleteButton';
 
 interface DeleteButtonProps {
   id: string;
@@ -16,7 +16,7 @@ export function DeleteButton({ id }: DeleteButtonProps) {
       await deleteCategoryFromClient(id);
       router.refresh();
     } catch {
-      alert("Failed to delete category");
+      alert('Failed to delete category');
     }
   };
 

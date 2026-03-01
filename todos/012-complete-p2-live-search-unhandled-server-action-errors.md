@@ -1,7 +1,7 @@
 ---
 status: complete
 priority: p2
-issue_id: "012"
+issue_id: '012'
 tags: [code-review, quality, frontend, error-handling, typescript]
 dependencies: []
 ---
@@ -25,11 +25,13 @@ The live-search effect does not catch errors from the server action call. Failur
 **Approach:** Add `catch` in the debounced async function. On error, clear results, close dropdown, optionally set a lightweight error message.
 
 **Pros:**
+
 - Minimal change
 - Removes unhandled rejection path
 - Predictable user behavior on backend failure
 
 **Cons:**
+
 - Requires small extra state if showing error text
 
 **Effort:** 30-60 minutes
@@ -43,10 +45,12 @@ The live-search effect does not catch errors from the server action call. Failur
 **Approach:** Abstract request lifecycle (loading/success/error) into reusable hook/helper for search and similar components.
 
 **Pros:**
+
 - Better consistency across async UI flows
 - Easier standardized error telemetry
 
 **Cons:**
+
 - Broader refactor for a localized issue
 
 **Effort:** 2-3 hours
@@ -55,17 +59,19 @@ The live-search effect does not catch errors from the server action call. Failur
 
 ## Recommended Action
 
-
 ## Technical Details
 
 **Affected files:**
+
 - `src/components/SearchBox.tsx:32-41`
 - `src/lib/actions.ts:135-158` (error source endpoint)
 
 **Related components:**
+
 - `src/components/TopNav.tsx`
 
 **Database changes (if any):**
+
 - Migration needed? No
 
 ## Resources
@@ -87,11 +93,13 @@ The live-search effect does not catch errors from the server action call. Failur
 **By:** Codex
 
 **Actions:**
+
 - Traced live-search async control flow and failure path.
 - Confirmed missing catch handler for server action errors.
 - Documented minimal and refactor-level remediation options.
 
 **Learnings:**
+
 - `finally` ensures loading reset, but it does not prevent rejection propagation.
 
 ## Notes
@@ -103,7 +111,9 @@ The live-search effect does not catch errors from the server action call. Failur
 **By:** Codex
 
 **Actions:**
+
 - Implemented fix in code and validated via `npm run lint` + `npm run build`.
 
 **Learnings:**
+
 - Issue resolved in current branch.

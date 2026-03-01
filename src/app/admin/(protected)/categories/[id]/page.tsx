@@ -1,8 +1,8 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
-import { updateCategory } from "@/lib/actions";
-import { cookies } from "next/headers";
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { prisma } from '@/lib/prisma';
+import { updateCategory } from '@/lib/actions';
+import { cookies } from 'next/headers';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -19,9 +19,9 @@ export default async function EditCategoryPage({ params }: PageProps) {
   }
 
   async function handleSubmit(formData: FormData) {
-    "use server";
+    'use server';
     const cookieStore = await cookies();
-    const session = cookieStore.get("admin_session")?.value ?? null;
+    const session = cookieStore.get('admin_session')?.value ?? null;
     await updateCategory(formData, session);
   }
 

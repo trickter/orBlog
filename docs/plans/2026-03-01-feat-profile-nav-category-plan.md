@@ -21,12 +21,14 @@ Add features for editable personal profile in sidebar, move search/categories to
 ### 1. Editable Personal Profile in Sidebar
 
 Store profile data in database or config file:
+
 - Avatar (image URL or upload)
 - Name
 - Bio/description
 - Social links (GitHub, Twitter, Email)
 
 **Data Model:**
+
 ```prisma
 model Profile {
   id        String  @id @default("default")
@@ -42,6 +44,7 @@ model Profile {
 ### 2. Top Navigation Bar
 
 Move search and categories to top navigation (like UI reference):
+
 - Logo/Site name on left
 - Navigation links: Home, Categories (dropdown with all categories), About
 - Search bar integrated in nav
@@ -57,6 +60,7 @@ Move search and categories to top navigation (like UI reference):
 ### 4. Category Filter UI
 
 Like `/images/分类.png`:
+
 - Horizontal scrolling pill list at top of post list
 - "All" option to show all posts
 - Clicking category filters posts on current page (or navigate to category page)
@@ -65,22 +69,26 @@ Like `/images/分类.png`:
 ## Technical Approach
 
 ### Phase 1: Profile Data Model
+
 - Add Profile model to Prisma schema
 - Add CRUD actions for profile
 - Create admin profile edit page
 
 ### Phase 2: Top Navigation
+
 - Create TopNav component
 - Move search from sidebar to top nav
 - Add categories dropdown
 - Update BlogLayout
 
 ### Phase 3: Category Management
+
 - Add category CRUD actions
 - Create admin category list page
 - Create admin category new/edit page
 
 ### Phase 4: Category Filter UI
+
 - Update homepage to show category filter pills
 - Horizontal scroll container for categories
 - Filter posts by category (client-side or server-side)

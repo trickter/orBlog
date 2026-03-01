@@ -36,17 +36,20 @@ Sidebar (below):
 ## Technical Requirements
 
 ### 1. Fix Top Nav Layout (P1)
+
 - Fix grid layout to have all items in one row
 - orblog logo | search bar | 分类 dropdown | 关于 link
 - Remove syntax error: `useState(false));` → `useState(false);`
 
 ### 2. Dynamic Search Dropdown (P1)
+
 - Add client-side search with debounce
 - Show dropdown with matching posts as user types
 - Click on result navigates to post
 - Minimum 2 characters to trigger search
 
 ### 3. Category Management (P2)
+
 - Verify delete capability exists in admin
 - Add quick delete option in category dropdown (optional)
 

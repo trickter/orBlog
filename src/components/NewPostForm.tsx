@@ -1,12 +1,15 @@
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
-import { createPost } from "@/lib/actions";
-import { ZipUpload } from "@/components/ZipUpload";
-import { ZipImage, ZipImportResult } from "@/lib/zip-import";
-import { MarkdownRenderer } from "@/components/MarkdownRenderer";
-import { imageLookupKeys, rewriteMarkdownImageLinks } from "@/lib/markdown-image-links";
-import Link from "next/link";
+import { useMemo, useState } from 'react';
+import { createPost } from '@/lib/actions';
+import { ZipUpload } from '@/components/ZipUpload';
+import { ZipImage, ZipImportResult } from '@/lib/zip-import';
+import { MarkdownRenderer } from '@/components/MarkdownRenderer';
+import {
+  imageLookupKeys,
+  rewriteMarkdownImageLinks,
+} from '@/lib/markdown-image-links';
+import Link from 'next/link';
 
 interface Category {
   id: string;
@@ -20,9 +23,9 @@ interface NewPostFormProps {
 }
 
 export function NewPostForm({ categories, session }: NewPostFormProps) {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [categoryId, setCategoryId] = useState("");
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [categoryId, setCategoryId] = useState('');
   const [published, setPublished] = useState(true);
   const [zipImages, setZipImages] = useState<ZipImage[]>([]);
   const [imageCount, setImageCount] = useState(0);
@@ -44,15 +47,15 @@ export function NewPostForm({ categories, session }: NewPostFormProps) {
 
     try {
       const formData = new FormData();
-      formData.append("title", title);
-      formData.append("content", content);
-      formData.append("categoryId", categoryId);
-      formData.append("published", published ? "on" : "");
-      formData.append("zipImages", JSON.stringify(zipImages));
+      formData.append('title', title);
+      formData.append('content', content);
+      formData.append('categoryId', categoryId);
+      formData.append('published', published ? 'on' : '');
+      formData.append('zipImages', JSON.stringify(zipImages));
 
       await createPost(formData as unknown as FormData, session);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create post");
+      setError(err instanceof Error ? err.message : 'Failed to create post');
       setIsSubmitting(false);
     }
   };
@@ -70,7 +73,7 @@ export function NewPostForm({ categories, session }: NewPostFormProps) {
     const imageDataUrlByKey = new Map<string, string>();
 
     for (const image of zipImages) {
-      const mimeType = image.mimeType || "image/png";
+      const mimeType = image.mimeType || 'image/png';
       const dataUrl = `data:${mimeType};base64,${image.data}`;
 
       for (const key of imageLookupKeys(image.name)) {
@@ -108,7 +111,7 @@ export function NewPostForm({ categories, session }: NewPostFormProps) {
         {imageCount > 0 && (
           <div className="flex items-center justify-between text-sm text-green-600 dark:text-green-400">
             <span>
-              {imageCount} image{imageCount !== 1 ? "s" : ""} ready to import
+              {imageCount} image{imageCount !== 1 ? 's' : ''} ready to import
             </span>
             <button
               type="button"
@@ -193,7 +196,7 @@ export function NewPostForm({ categories, session }: NewPostFormProps) {
             disabled={isSubmitting}
             className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50"
           >
-            {isSubmitting ? "Creating..." : "Create Post"}
+            {isSubmitting ? 'Creating...' : 'Create Post'}
           </button>
           <button
             type="button"
@@ -223,17 +226,27 @@ export function NewPostForm({ categories, session }: NewPostFormProps) {
                 onClick={() => setShowPreview(false)}
                 className="text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
             <div className="p-6 overflow-y-auto">
               <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">
-                {title || "Untitled"}
+                {title || 'Untitled'}
               </h1>
               <div className="prose prose-slate dark:prose-invert max-w-none">
-                <MarkdownRenderer content={previewContent || "*No content*"} />
+                <MarkdownRenderer content={previewContent || '*No content*'} />
               </div>
             </div>
           </div>

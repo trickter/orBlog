@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { formatDate, extractExcerpt } from "@/lib/utils";
-import { PostCardData } from "@/lib/post-types";
+import Link from 'next/link';
+import { formatDate, extractExcerpt } from '@/lib/utils';
+import { PostCardData } from '@/lib/post-types';
 
 interface PostCardProps {
   post: PostCardData;

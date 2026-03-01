@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useState } from 'react';
 
 interface DeleteButtonProps {
   onDelete: () => void | Promise<void>;
@@ -11,9 +11,9 @@ interface DeleteButtonProps {
 
 export function DeleteButton({
   onDelete,
-  idleLabel = "Delete",
-  confirmLabel = "Confirm?",
-  className = "text-red-600 hover:text-red-700",
+  idleLabel = 'Delete',
+  confirmLabel = 'Confirm?',
+  className = 'text-red-600 hover:text-red-700',
 }: DeleteButtonProps) {
   const [confirming, setConfirming] = useState(false);
 
@@ -28,11 +28,7 @@ export function DeleteButton({
   };
 
   return (
-    <button
-      type="button"
-      onClick={handleClick}
-      className={className}
-    >
+    <button type="button" onClick={handleClick} className={className}>
       {confirming ? confirmLabel : idleLabel}
     </button>
   );

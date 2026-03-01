@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect, useSyncExternalStore } from 'react';
 
 function useMounted() {
   return useSyncExternalStore(
@@ -15,19 +15,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Check localStorage - default to light if not set
-    const stored = localStorage.getItem("theme");
-    if (stored === "dark") {
-      document.documentElement.classList.add("dark");
+    const stored = localStorage.getItem('theme');
+    if (stored === 'dark') {
+      document.documentElement.classList.add('dark');
     }
   }, []);
 
   // Prevent flash of wrong theme
   if (!mounted) {
-    return (
-      <div style={{ visibility: "hidden" }}>
-        {children}
-      </div>
-    );
+    return <div style={{ visibility: 'hidden' }}>{children}</div>;
   }
 
   return <>{children}</>;

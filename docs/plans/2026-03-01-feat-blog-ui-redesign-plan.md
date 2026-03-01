@@ -18,12 +18,14 @@ Redesign the blog to match the UI reference image with a two-column layout: pers
 ## Layout Structure
 
 ### Left Sidebar (Personal Profile)
+
 - Circular avatar image
 - Name/username
 - Bio/description
 - Social links: GitHub, Twitter/X, Gmail icons
 
 ### Right Content Area
+
 - Top navigation: Home, Tags, About
 - Search bar
 - Blog post cards with:
@@ -34,22 +36,26 @@ Redesign the blog to match the UI reference image with a two-column layout: pers
 ## Typography
 
 Switch to developer/ youth-friendly fonts:
+
 - **Primary font**: JetBrains Mono (monospace, developer-friendly) or Geist (modern, clean)
 - **Chinese font**: Noto Sans SC or system-ui for better CJK support
 
 ## Technical Approach
 
 ### Phase 1: Layout Structure
+
 - Create Sidebar component with profile info
 - Update main layout to two-column grid
 - Make sidebar responsive (hidden on mobile, hamburger menu)
 
 ### Phase 2: Components
+
 - ProfileCard component with avatar, name, bio, social links
 - Update Header/Navigation for the new layout
 - Update post cards to match UI (pill-style tags)
 
 ### Phase 3: Typography
+
 - Configure Google Fonts in Next.js
 - Update globals.css with new font families
 - Apply to all text elements

@@ -1,10 +1,10 @@
-import Link from "next/link";
-import { prisma } from "@/lib/prisma";
-import { DeleteButton } from "@/components/DeleteCategoryButton";
+import Link from 'next/link';
+import { prisma } from '@/lib/prisma';
+import { DeleteButton } from '@/components/DeleteCategoryButton';
 
 export default async function CategoriesPage() {
   const categories = await prisma.category.findMany({
-    orderBy: { name: "asc" },
+    orderBy: { name: 'asc' },
     include: { _count: { select: { posts: true } } },
   });
 

@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { searchPostsForDropdown } from "@/lib/actions";
-import { Search } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { searchPostsForDropdown } from '@/lib/actions';
+import { Search } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import {
   SEARCH_DROPDOWN_DEBOUNCE_MS,
   SEARCH_DROPDOWN_MIN_QUERY,
-} from "@/lib/constants";
+} from '@/lib/constants';
 
 interface SearchResult {
   id: string;
@@ -20,7 +20,7 @@ interface SearchResult {
 export function SearchBox() {
   const router = useRouter();
   const latestRequestIdRef = useRef(0);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);

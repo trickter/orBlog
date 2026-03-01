@@ -1,16 +1,19 @@
-"use server";
+'use server';
 
-import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { postDropdownSelect, postWithCategorySelect } from "@/lib/post-select";
+import { prisma } from '@/lib/prisma';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { postDropdownSelect, postWithCategorySelect } from '@/lib/post-select';
 import {
   SEARCH_DROPDOWN_LIMIT,
   SEARCH_DROPDOWN_MAX_QUERY_LENGTH,
   SEARCH_DROPDOWN_MIN_QUERY,
-} from "@/lib/constants";
-import { slugify, verifyAdmin } from "@/lib/action-helpers";
-import { imageLookupKeys, rewriteMarkdownImageLinks } from "@/lib/markdown-image-links";
+} from '@/lib/constants';
+import { slugify, verifyAdmin } from '@/lib/action-helpers';
+import {
+  imageLookupKeys,
+  rewriteMarkdownImageLinks,
+} from '@/lib/markdown-image-links';
 
 export async function getPosts(categorySlug?: string) {
   return prisma.post.findMany({
@@ -18,14 +21,14 @@ export async function getPosts(categorySlug?: string) {
       published: true,
       ...(categorySlug ? { category: { slug: categorySlug } } : {}),
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: 'desc' },
     select: postWithCategorySelect,
   });
 }
 
 export async function getAllPosts() {
   return prisma.post.findMany({
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: 'desc' },
     select: postWithCategorySelect,
   });
 }
@@ -50,7 +53,7 @@ export async function searchPosts(query: string) {
       published: true,
       OR: [{ title: { contains: query } }, { content: { contains: query } }],
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: 'desc' },
     select: postWithCategorySelect,
   });
 }
@@ -58,7 +61,7 @@ export async function searchPosts(query: string) {
 export async function searchPostsForDropdown(query: string) {
   const normalized = query
     .trim()
-    .replace(/\s+/g, " ")
+    .replace(/\s+/g, ' ')
     .slice(0, SEARCH_DROPDOWN_MAX_QUERY_LENGTH);
   if (normalized.length < SEARCH_DROPDOWN_MIN_QUERY) {
     return [];
@@ -69,7 +72,7 @@ export async function searchPostsForDropdown(query: string) {
       published: true,
       title: { contains: normalized },
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: 'desc' },
     take: SEARCH_DROPDOWN_LIMIT,
     select: postDropdownSelect,
   });
@@ -78,6 +81,41 @@ export async function searchPostsForDropdown(query: string) {
 export interface ZipImageData {
   name: string;
   data: string; // base64 encoded
+}
+
+export async function applyZipImagesIfPresent(
+  content: string,
+  zipImagesJson: string,
+  slug: string,
+  processor: (
+    content: string,
+    images: ZipImageData[],
+    slug: string
+  ) => Promise<string> = processZipImages
+): Promise<string> {
+  if (!zipImagesJson || zipImagesJson === '[]') {
+    return content;
+  }
+
+  let zipImages: ZipImageData[];
+  try {
+    zipImages = JSON.parse(zipImagesJson) as ZipImageData[];
+  } catch {
+    throw new Error('ZIP images metadata is invalid.');
+  }
+
+  if (!Array.isArray(zipImages) || zipImages.length === 0) {
+    return content;
+  }
+
+  try {
+    return await processor(content, zipImages, slug);
+  } catch (error) {
+    console.error('Error processing zip images:', error);
+    throw new Error(
+      'ZIP images processing failed. Please verify ZIP content and retry.'
+    );
+  }
 }
 
 export async function processZipImages(
@@ -89,16 +127,22 @@ export async function processZipImages(
     return content;
   }
 
-  const fs = await import("fs/promises");
-  const path = await import("path");
-  const uploadDir = path.join(process.cwd(), "public", "uploads", "posts", slug);
+  const fs = await import('fs/promises');
+  const path = await import('path');
+  const uploadDir = path.join(
+    process.cwd(),
+    'public',
+    'uploads',
+    'posts',
+    slug
+  );
   await fs.mkdir(uploadDir, { recursive: true });
 
   const imagePathByKey = new Map<string, string>();
 
   for (const img of images) {
-    const buffer = Buffer.from(img.data, "base64");
-    const ext = path.extname(img.name) || ".png";
+    const buffer = Buffer.from(img.data, 'base64');
+    const ext = path.extname(img.name) || '.png';
     const filename = `${crypto.randomUUID()}${ext}`;
     const filepath = path.join(uploadDir, filename);
 
@@ -122,18 +166,21 @@ export async function processZipImages(
   });
 }
 
-export async function createPost(formData: FormData, adminSecret: string | null) {
+export async function createPost(
+  formData: FormData,
+  adminSecret: string | null
+) {
   if (!verifyAdmin(adminSecret)) {
-    throw new Error("Unauthorized");
+    throw new Error('Unauthorized');
   }
 
-  const title = String(formData.get("title") ?? "").trim();
-  const content = String(formData.get("content") ?? "").trim();
-  const published = formData.get("published") === "on";
-  const categoryId = String(formData.get("categoryId") ?? "").trim() || null;
+  const title = String(formData.get('title') ?? '').trim();
+  const content = String(formData.get('content') ?? '').trim();
+  const published = formData.get('published') === 'on';
+  const categoryId = String(formData.get('categoryId') ?? '').trim() || null;
 
   if (!title || !content) {
-    throw new Error("Title and content are required");
+    throw new Error('Title and content are required');
   }
 
   let slug = slugify(title);
@@ -142,19 +189,12 @@ export async function createPost(formData: FormData, adminSecret: string | null)
     slug = `${slug}-${Date.now()}`;
   }
 
-  let finalContent = content;
-  const zipImagesJson = String(formData.get("zipImages") ?? "[]");
-
-  if (zipImagesJson && zipImagesJson !== "[]") {
-    try {
-      const zipImages: ZipImageData[] = JSON.parse(zipImagesJson);
-      if (zipImages.length > 0) {
-        finalContent = await processZipImages(content, zipImages, slug);
-      }
-    } catch (e) {
-      console.error("Error processing zip images:", e);
-    }
-  }
+  const zipImagesJson = String(formData.get('zipImages') ?? '[]');
+  const finalContent = await applyZipImagesIfPresent(
+    content,
+    zipImagesJson,
+    slug
+  );
 
   await prisma.post.create({
     data: {
@@ -166,24 +206,27 @@ export async function createPost(formData: FormData, adminSecret: string | null)
     },
   });
 
-  revalidatePath("/");
-  revalidatePath("/admin");
-  redirect(published ? "/" : "/admin");
+  revalidatePath('/');
+  revalidatePath('/admin');
+  redirect(published ? '/' : '/admin');
 }
 
-export async function updatePost(formData: FormData, adminSecret: string | null) {
+export async function updatePost(
+  formData: FormData,
+  adminSecret: string | null
+) {
   if (!verifyAdmin(adminSecret)) {
-    throw new Error("Unauthorized");
+    throw new Error('Unauthorized');
   }
 
-  const id = String(formData.get("id") ?? "").trim();
-  const title = String(formData.get("title") ?? "").trim();
-  const content = String(formData.get("content") ?? "").trim();
-  const published = formData.get("published") === "on";
-  const categoryId = String(formData.get("categoryId") ?? "").trim() || null;
+  const id = String(formData.get('id') ?? '').trim();
+  const title = String(formData.get('title') ?? '').trim();
+  const content = String(formData.get('content') ?? '').trim();
+  const published = formData.get('published') === 'on';
+  const categoryId = String(formData.get('categoryId') ?? '').trim() || null;
 
   if (!id || !title || !content) {
-    throw new Error("ID, title and content are required");
+    throw new Error('ID, title and content are required');
   }
 
   const currentPost = await prisma.post.findUnique({
@@ -191,7 +234,7 @@ export async function updatePost(formData: FormData, adminSecret: string | null)
     select: { slug: true, title: true },
   });
   if (!currentPost) {
-    throw new Error("Post not found");
+    throw new Error('Post not found');
   }
 
   let slug = currentPost.slug;
@@ -214,15 +257,15 @@ export async function updatePost(formData: FormData, adminSecret: string | null)
     },
   });
 
-  revalidatePath("/");
+  revalidatePath('/');
   revalidatePath(`/posts/${currentPost.slug}`);
-  revalidatePath("/admin");
-  redirect(published ? `/posts/${slug}` : "/admin");
+  revalidatePath('/admin');
+  redirect(published ? `/posts/${slug}` : '/admin');
 }
 
 export async function deletePost(id: string, adminSecret: string | null) {
   if (!verifyAdmin(adminSecret)) {
-    throw new Error("Unauthorized");
+    throw new Error('Unauthorized');
   }
 
   const post = await prisma.post.findUnique({
@@ -231,12 +274,12 @@ export async function deletePost(id: string, adminSecret: string | null) {
   });
 
   if (!post) {
-    throw new Error("Post not found");
+    throw new Error('Post not found');
   }
 
   await prisma.post.delete({ where: { id } });
 
-  revalidatePath("/");
+  revalidatePath('/');
   revalidatePath(`/posts/${post.slug}`);
-  revalidatePath("/admin");
+  revalidatePath('/admin');
 }

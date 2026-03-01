@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
-import { SearchBox } from "@/components/SearchBox";
+import Link from 'next/link';
+import { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
+import { SearchBox } from '@/components/SearchBox';
 
 interface Category {
   id: string;

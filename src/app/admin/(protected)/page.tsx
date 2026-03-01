@@ -1,14 +1,14 @@
-import Link from "next/link";
-import { getAllPosts, deletePost } from "@/lib/actions";
-import { formatDate } from "@/lib/utils";
-import { cookies } from "next/headers";
-import { DeletePostButton } from "@/components/DeletePostButton";
+import Link from 'next/link';
+import { getAllPosts, deletePost } from '@/lib/actions';
+import { formatDate } from '@/lib/utils';
+import { cookies } from 'next/headers';
+import { DeletePostButton } from '@/components/DeletePostButton';
 
 export const revalidate = 0;
 
 export default async function AdminPage() {
   const cookieStore = await cookies();
-  const session = cookieStore.get("admin_session")?.value ?? null;
+  const session = cookieStore.get('admin_session')?.value ?? null;
   const posts = await getAllPosts();
 
   return (
@@ -27,7 +27,7 @@ export default async function AdminPage() {
 
       {posts.length === 0 ? (
         <p className="text-zinc-600 dark:text-zinc-400">
-          No posts yet.{" "}
+          No posts yet.{' '}
           <Link href="/admin/new" className="text-blue-600 hover:underline">
             Create your first post
           </Link>
@@ -66,11 +66,11 @@ export default async function AdminPage() {
                     <span
                       className={`text-sm ${
                         post.published
-                          ? "text-green-600 dark:text-green-400"
-                          : "text-zinc-500"
+                          ? 'text-green-600 dark:text-green-400'
+                          : 'text-zinc-500'
                       }`}
                     >
-                      {post.published ? "Published" : "Draft"}
+                      {post.published ? 'Published' : 'Draft'}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-sm text-zinc-500 dark:text-zinc-400">

@@ -1,7 +1,7 @@
 ---
 status: pending
 priority: p3
-issue_id: "010"
+issue_id: '010'
 tags: [code-review, performance, quality, nextjs, ui]
 dependencies: []
 ---
@@ -25,10 +25,12 @@ Sidebar avatar uses `<img>` directly, which triggers Next lint warning and misse
 **Approach:** Replace `<img>` with `Image` and provide width/height and appropriate sizing.
 
 **Pros:**
+
 - Better performance/LCP behavior
 - Removes lint warning
 
 **Cons:**
+
 - Requires domain config if remote avatars are used
 
 **Effort:** Small
@@ -42,9 +44,11 @@ Sidebar avatar uses `<img>` directly, which triggers Next lint warning and misse
 **Approach:** Add local lint suppression with rationale.
 
 **Pros:**
+
 - Minimal code change
 
 **Cons:**
+
 - Keeps non-optimized image path
 - Technical debt
 
@@ -54,10 +58,10 @@ Sidebar avatar uses `<img>` directly, which triggers Next lint warning and misse
 
 ## Recommended Action
 
-
 ## Technical Details
 
 **Affected files:**
+
 - `src/components/Sidebar.tsx`
 - potentially `next.config.ts` (remote image domains)
 
@@ -78,8 +82,10 @@ Sidebar avatar uses `<img>` directly, which triggers Next lint warning and misse
 **By:** Codex
 
 **Actions:**
+
 - Ran lint on target branch
 - Captured warning location and context
 
 **Learnings:**
+
 - UI polish branch still needs optimization pass for image component usage

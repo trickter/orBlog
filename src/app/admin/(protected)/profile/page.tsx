@@ -1,30 +1,29 @@
-import Link from "next/link";
-import { prisma } from "@/lib/prisma";
-import { updateProfile } from "@/lib/actions";
-import { cookies } from "next/headers";
+import Link from 'next/link';
+import { prisma } from '@/lib/prisma';
+import { updateProfile } from '@/lib/actions';
+import { cookies } from 'next/headers';
 
 export default async function ProfilePage() {
-
   const profile = await prisma.profile.findUnique({
-    where: { id: "default" },
+    where: { id: 'default' },
   });
 
   const defaultProfile = {
-    id: "default",
-    name: "Alex",
-    bio: "Full Stack Developer",
-    avatar: "",
-    github: "",
-    twitter: "",
-    email: "",
+    id: 'default',
+    name: 'Alex',
+    bio: 'Full Stack Developer',
+    avatar: '',
+    github: '',
+    twitter: '',
+    email: '',
   };
 
   const current = profile || defaultProfile;
 
   async function handleSubmit(formData: FormData) {
-    "use server";
+    'use server';
     const cookieStore = await cookies();
-    const session = cookieStore.get("admin_session")?.value ?? null;
+    const session = cookieStore.get('admin_session')?.value ?? null;
     await updateProfile(formData, session);
   }
 
@@ -54,7 +53,7 @@ export default async function ProfilePage() {
           </label>
           <textarea
             name="bio"
-            defaultValue={current.bio || ""}
+            defaultValue={current.bio || ''}
             rows={3}
             className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
             placeholder="Tell us about yourself..."
@@ -68,7 +67,7 @@ export default async function ProfilePage() {
           <input
             type="url"
             name="avatar"
-            defaultValue={current.avatar || ""}
+            defaultValue={current.avatar || ''}
             className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
             placeholder="https://example.com/avatar.jpg"
           />
@@ -81,7 +80,7 @@ export default async function ProfilePage() {
           <input
             type="text"
             name="github"
-            defaultValue={current.github || ""}
+            defaultValue={current.github || ''}
             className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
             placeholder="username"
           />
@@ -94,7 +93,7 @@ export default async function ProfilePage() {
           <input
             type="text"
             name="twitter"
-            defaultValue={current.twitter || ""}
+            defaultValue={current.twitter || ''}
             className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
             placeholder="username"
           />
@@ -107,7 +106,7 @@ export default async function ProfilePage() {
           <input
             type="email"
             name="email"
-            defaultValue={current.email || ""}
+            defaultValue={current.email || ''}
             className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
             placeholder="hello@example.com"
           />

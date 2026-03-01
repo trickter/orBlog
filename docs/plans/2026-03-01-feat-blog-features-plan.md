@@ -10,6 +10,7 @@ date: 2026-03-01
 ## Overview
 
 Add four features to the personal blog:
+
 1. Dark/Light theme toggle
 2. Blog search functionality
 3. Blog categories
@@ -18,6 +19,7 @@ Add four features to the personal blog:
 ## Problem Statement / Motivation
 
 The current blog is functional but lacks:
+
 - Theme preference (users can't choose light/dark)
 - Search (hard to find posts)
 - Categories (no organization)
@@ -26,18 +28,21 @@ The current blog is functional but lacks:
 ## Proposed Solution
 
 ### 1. Dark/Light Theme Toggle
+
 - Add theme toggle button in header
 - Persist preference in localStorage
 - Use Tailwind's `dark:` classes
 - Support system preference as default
 
 ### 2. Blog Search
+
 - Add search input in header
 - Search by title and content
 - Display results on dedicated `/search` page
 - Use server-side search with Prisma `contains`
 
 ### 3. Blog Categories
+
 - Add `categoryId` field to Post model
 - Create Category model if needed (use existing Tag model)
 - Add category selection in admin post editor
@@ -45,6 +50,7 @@ The current blog is functional but lacks:
 - Add category filter pages `/category/[slug]`
 
 ### 4. Enhanced Homepage Cards
+
 - Add `viewCount` field to Post model
 - Display: category badge, view count, publish date
 - Update card UI to show metadata row
@@ -52,6 +58,7 @@ The current blog is functional but lacks:
 ## Technical Considerations
 
 ### Database Changes
+
 ```prisma
 model Post {
   // existing fields...
@@ -69,6 +76,7 @@ model Category {
 ```
 
 ### Architecture
+
 - **Next.js App Router** - Continue using existing patterns
 - **Theme**: localStorage + CSS variables + Tailwind dark mode
 - **Search**: Server action + search page with URL query param
@@ -84,24 +92,28 @@ model Category {
 ## Acceptance Criteria
 
 ### Theme Toggle
+
 - [ ] Toggle button in header (sun/moon icon)
 - [ ] Persists to localStorage
 - [ ] Respects system preference on first visit
 - [ ] Smooth transition between themes
 
 ### Search
+
 - [ ] Search input in header
 - [ ] Results page at `/search?q=query`
 - [ ] Searches title and content
 - [ ] Shows matching posts
 
 ### Categories
+
 - [ ] Category model in database
 - [ ] Category selection in admin post editor
 - [ ] Category badge on post cards
 - [ ] Category pages `/category/[slug]`
 
 ### Enhanced Cards
+
 - [ ] View count on each post card
 - [ ] Category badge on each post card
 - [ ] Publish date on each post card

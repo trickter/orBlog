@@ -10,6 +10,7 @@ A personal blog platform - a dynamic, database-backed web application for writin
 ## Why This Approach
 
 **Full-stack Next.js** was chosen because:
+
 - Complete control over data models and CMS functionality
 - Single codebase for frontend and backend
 - Personal use means custom admin panel is manageable
@@ -18,15 +19,15 @@ A personal blog platform - a dynamic, database-backed web application for writin
 
 ## Key Decisions
 
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| Framework | Next.js | User preference, full-stack capability |
-| Database | SQLite | Simple file-based DB, easy to backup |
-| Content | Markdown | Developer-friendly, popular for blogs |
-| Auth | None | Protected by environment variable |
-| Admin | Custom admin panel | Built into the app |
-| Styling | Tailwind CSS | Utility-first, fast development |
-| Deployment | Self-hosted | More control |
+| Decision   | Choice             | Rationale                              |
+| ---------- | ------------------ | -------------------------------------- |
+| Framework  | Next.js            | User preference, full-stack capability |
+| Database   | SQLite             | Simple file-based DB, easy to backup   |
+| Content    | Markdown           | Developer-friendly, popular for blogs  |
+| Auth       | None               | Protected by environment variable      |
+| Admin      | Custom admin panel | Built into the app                     |
+| Styling    | Tailwind CSS       | Utility-first, fast development        |
+| Deployment | Self-hosted        | More control                           |
 
 ## Open Questions
 

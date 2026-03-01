@@ -1,13 +1,13 @@
-"use server";
+'use server';
 
-import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
-import { slugify, verifyAdmin } from "@/lib/action-helpers";
-import { postWithCategorySelect } from "@/lib/post-select";
+import { prisma } from '@/lib/prisma';
+import { revalidatePath } from 'next/cache';
+import { slugify, verifyAdmin } from '@/lib/action-helpers';
+import { postWithCategorySelect } from '@/lib/post-select';
 
 export async function getCategories() {
   return prisma.category.findMany({
-    orderBy: { name: "asc" },
+    orderBy: { name: 'asc' },
   });
 }
 
@@ -23,50 +23,56 @@ export async function getPostsByCategory(categorySlug: string) {
       published: true,
       category: { slug: categorySlug },
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: 'desc' },
     select: postWithCategorySelect,
   });
 }
 
-export async function createCategory(formData: FormData, adminSecret: string | null) {
+export async function createCategory(
+  formData: FormData,
+  adminSecret: string | null
+) {
   if (!verifyAdmin(adminSecret)) {
-    throw new Error("Unauthorized");
+    throw new Error('Unauthorized');
   }
 
-  const name = String(formData.get("name") ?? "").trim();
+  const name = String(formData.get('name') ?? '').trim();
   if (!name) {
-    throw new Error("Category name is required");
+    throw new Error('Category name is required');
   }
 
   const slug = slugify(name);
   const existing = await prisma.category.findUnique({ where: { slug } });
   if (existing) {
-    throw new Error("Category already exists");
+    throw new Error('Category already exists');
   }
 
   await prisma.category.create({
     data: { name, slug },
   });
 
-  revalidatePath("/");
-  revalidatePath("/admin");
+  revalidatePath('/');
+  revalidatePath('/admin');
 }
 
-export async function updateCategory(formData: FormData, adminSecret: string | null) {
+export async function updateCategory(
+  formData: FormData,
+  adminSecret: string | null
+) {
   if (!verifyAdmin(adminSecret)) {
-    throw new Error("Unauthorized");
+    throw new Error('Unauthorized');
   }
 
-  const id = String(formData.get("id") ?? "").trim();
-  const name = String(formData.get("name") ?? "").trim();
+  const id = String(formData.get('id') ?? '').trim();
+  const name = String(formData.get('name') ?? '').trim();
   if (!id || !name) {
-    throw new Error("ID and name are required");
+    throw new Error('ID and name are required');
   }
 
   const slug = slugify(name);
   const existing = await prisma.category.findUnique({ where: { slug } });
   if (existing && existing.id !== id) {
-    throw new Error("Category name already exists");
+    throw new Error('Category name already exists');
   }
 
   await prisma.category.update({
@@ -74,25 +80,25 @@ export async function updateCategory(formData: FormData, adminSecret: string | n
     data: { name, slug },
   });
 
-  revalidatePath("/");
-  revalidatePath("/admin");
+  revalidatePath('/');
+  revalidatePath('/admin');
 }
 
 export async function deleteCategory(id: string, adminSecret: string | null) {
   if (!verifyAdmin(adminSecret)) {
-    throw new Error("Unauthorized");
+    throw new Error('Unauthorized');
   }
 
   await prisma.category.delete({ where: { id } });
 
-  revalidatePath("/");
-  revalidatePath("/admin");
+  revalidatePath('/');
+  revalidatePath('/admin');
 }
 
 export async function deleteCategoryFromClient(id: string) {
-  "use server";
-  const { cookies } = await import("next/headers");
+  'use server';
+  const { cookies } = await import('next/headers');
   const cookieStore = await cookies();
-  const session = cookieStore.get("admin_session")?.value ?? null;
+  const session = cookieStore.get('admin_session')?.value ?? null;
   await deleteCategory(id, session);
 }

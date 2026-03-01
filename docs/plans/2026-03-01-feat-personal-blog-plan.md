@@ -19,6 +19,7 @@ Need a personal blog to write and publish articles. Should be simple to use, eas
 (see brainstorm: docs/brainstorms/2026-03-01-personal-blog-brainstorm.md)
 
 Key decisions from brainstorm:
+
 - **Framework**: Next.js (full-stack)
 - **Database**: SQLite (file-based, easy backup)
 - **Content Format**: Markdown
@@ -30,6 +31,7 @@ Key decisions from brainstorm:
 ## Proposed Solution
 
 Build a Next.js app with:
+
 1. SQLite database via Prisma ORM
 2. Markdown content with a simple editor
 3. Public blog pages (home, post detail)
@@ -39,12 +41,14 @@ Build a Next.js app with:
 ## Technical Considerations
 
 ### Architecture
+
 - **Next.js 16** with App Router
 - **Prisma + SQLite** for database (pattern from `/app/ai-code/orblog`)
 - **Server Actions** for data mutations (pattern from `/app/ai-code/orblog/src/lib/actions.ts`)
 - **Tailwind CSS v4** with `@tailwindcss/typography` plugin
 
 ### Dependencies
+
 - `prisma`, `@prisma/client` - Database ORM
 - `marked`, `react-markdown`, `rehype-highlight`, `remark-gfm` - Markdown rendering
 - `lucide-react` - Icons
@@ -60,6 +64,7 @@ Build a Next.js app with:
 ## Acceptance Criteria
 
 ### Core Features
+
 - [x] Home page lists all published posts (title, excerpt, date)
 - [x] Post detail page renders Markdown to HTML with syntax highlighting
 - [x] Admin page lists all posts with edit/delete options
@@ -68,6 +73,7 @@ Build a Next.js app with:
 - [x] Delete post with confirmation
 
 ### Technical Requirements
+
 - [x] SQLite database with Prisma schema (posts, tags)
 - [x] Admin panel protected by `ADMIN_SECRET` env var
 - [x] Markdown rendered with proper formatting and code highlighting

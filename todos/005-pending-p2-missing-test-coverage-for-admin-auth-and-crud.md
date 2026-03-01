@@ -1,7 +1,7 @@
 ---
 status: completed
 priority: p2
-issue_id: "005"
+issue_id: '005'
 tags: [code-review, quality, testing, nextjs]
 dependencies: []
 ---
@@ -27,10 +27,12 @@ Feature introduces auth, write operations, and route protection, but no automate
 **Approach:** Add tests for login success/failure, protected route redirects, create/update/delete authorization checks.
 
 **Pros:**
+
 - Covers real behavior across boundaries
 - Catches regressions early
 
 **Cons:**
+
 - Requires test harness setup
 
 **Effort:** Medium
@@ -44,9 +46,11 @@ Feature introduces auth, write operations, and route protection, but no automate
 **Approach:** Unit-test helper logic (`slugify`, auth checks) without route integration.
 
 **Pros:**
+
 - Faster initial coverage
 
 **Cons:**
+
 - Misses integration/auth wiring failures
 
 **Effort:** Small
@@ -55,10 +59,10 @@ Feature introduces auth, write operations, and route protection, but no automate
 
 ## Recommended Action
 
-
 ## Technical Details
 
 **Affected files/components:**
+
 - Admin login API route
 - Protected admin layout gate
 - Server actions for post mutations
@@ -81,8 +85,10 @@ Feature introduces auth, write operations, and route protection, but no automate
 **By:** Codex
 
 **Actions:**
+
 - Audited branch for test assets and scripts
 - Verified absence of tests for new critical paths
 
 **Learnings:**
+
 - Security-sensitive flows need regression protection before scale

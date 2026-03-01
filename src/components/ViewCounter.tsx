@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { incrementViewCount } from "@/lib/actions";
-import { useEffect } from "react";
+import { incrementViewCount } from '@/lib/actions';
+import { useEffect } from 'react';
 
 interface ViewCounterProps {
   postId: string;

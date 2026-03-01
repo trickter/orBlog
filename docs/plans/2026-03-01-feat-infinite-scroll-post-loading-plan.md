@@ -15,6 +15,7 @@ origin: docs/brainstorms/2026-03-01-personal-blog-brainstorm.md
 Found brainstorm from 2026-03-01: personal blog platform. Using as foundation for planning.
 
 本方案沿用既有架构决策：
+
 - Next.js 全栈单仓（see brainstorm: docs/brainstorms/2026-03-01-personal-blog-brainstorm.md）
 - SQLite + Prisma 数据访问（see brainstorm: docs/brainstorms/2026-03-01-personal-blog-brainstorm.md）
 - Tailwind 组件风格与现有博客布局保持一致（see brainstorm: docs/brainstorms/2026-03-01-personal-blog-brainstorm.md）
@@ -22,6 +23,7 @@ Found brainstorm from 2026-03-01: personal blog platform. Using as foundation fo
 ## Problem Statement / Motivation
 
 当前首页在服务端一次性加载全部文章（`getPosts` 无分页参数），会带来：
+
 - 初始负载随着文章数增长而变慢
 - 数据库查询和渲染成本不必要地集中在首屏
 - 用户无法获得连续流式浏览体验
@@ -183,7 +185,10 @@ export async function getPostsPage(params: {
 
 ```tsx
 useEffect(() => {
-  const observer = new IntersectionObserver(onHitBottom, { root: null, threshold: 0 });
+  const observer = new IntersectionObserver(onHitBottom, {
+    root: null,
+    threshold: 0,
+  });
   observer.observe(sentinelRef.current!);
   return () => observer.disconnect();
 }, [onHitBottom]);

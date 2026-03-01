@@ -1,19 +1,19 @@
-"use server";
+'use server';
 
-import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
-import { verifyAdmin } from "@/lib/action-helpers";
+import { prisma } from '@/lib/prisma';
+import { revalidatePath } from 'next/cache';
+import { verifyAdmin } from '@/lib/action-helpers';
 
 export async function getProfile() {
   const profile = await prisma.profile.findUnique({
-    where: { id: "default" },
+    where: { id: 'default' },
   });
 
   if (!profile) {
     return {
-      id: "default",
-      name: "Alex",
-      bio: "Full Stack Developer",
+      id: 'default',
+      name: 'Alex',
+      bio: 'Full Stack Developer',
       avatar: null,
       github: null,
       twitter: null,
@@ -24,28 +24,31 @@ export async function getProfile() {
   return profile;
 }
 
-export async function updateProfile(formData: FormData, adminSecret: string | null) {
+export async function updateProfile(
+  formData: FormData,
+  adminSecret: string | null
+) {
   if (!verifyAdmin(adminSecret)) {
-    throw new Error("Unauthorized");
+    throw new Error('Unauthorized');
   }
 
-  const name = String(formData.get("name") ?? "").trim();
-  const bio = String(formData.get("bio") ?? "").trim() || null;
-  const avatar = String(formData.get("avatar") ?? "").trim() || null;
-  const github = String(formData.get("github") ?? "").trim() || null;
-  const twitter = String(formData.get("twitter") ?? "").trim() || null;
-  const email = String(formData.get("email") ?? "").trim() || null;
+  const name = String(formData.get('name') ?? '').trim();
+  const bio = String(formData.get('bio') ?? '').trim() || null;
+  const avatar = String(formData.get('avatar') ?? '').trim() || null;
+  const github = String(formData.get('github') ?? '').trim() || null;
+  const twitter = String(formData.get('twitter') ?? '').trim() || null;
+  const email = String(formData.get('email') ?? '').trim() || null;
 
   if (!name) {
-    throw new Error("Name is required");
+    throw new Error('Name is required');
   }
 
   await prisma.profile.upsert({
-    where: { id: "default" },
+    where: { id: 'default' },
     update: { name, bio, avatar, github, twitter, email },
-    create: { id: "default", name, bio, avatar, github, twitter, email },
+    create: { id: 'default', name, bio, avatar, github, twitter, email },
   });
 
-  revalidatePath("/");
-  revalidatePath("/admin");
+  revalidatePath('/');
+  revalidatePath('/admin');
 }

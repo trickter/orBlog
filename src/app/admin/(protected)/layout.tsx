@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { requireAdminAuth } from "@/lib/auth";
+import Link from 'next/link';
+import { requireAdminAuth } from '@/lib/auth';
 
 export default async function AdminLayout({
   children,
