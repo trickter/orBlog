@@ -22,10 +22,10 @@ interface BlogLayoutProps {
   categories: Category[];
 }
 
-export function BlogLayout({ children, profile, categories }: BlogLayoutProps) {
+export function BlogLayout({ children, profile }: BlogLayoutProps) {
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-900">
-      <TopNav categories={categories} />
+      <TopNav />
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left Sidebar */}
