@@ -48,6 +48,30 @@ export const AGENT_CAPABILITIES: AgentCapability[] = [
     resource: 'profile',
     requiresAdmin: true,
   },
+  {
+    tool: 'storage_upload',
+    action: 'Upload object to storage',
+    resource: 'storage',
+    requiresAdmin: true,
+  },
+  {
+    tool: 'storage_delete',
+    action: 'Delete object from storage',
+    resource: 'storage',
+    requiresAdmin: true,
+  },
+  {
+    tool: 'storage_presigned_get',
+    action: 'Get presigned download URL from storage',
+    resource: 'storage',
+    requiresAdmin: true,
+  },
+  {
+    tool: 'storage_exists',
+    action: 'Check whether storage object exists',
+    resource: 'storage',
+    requiresAdmin: true,
+  },
 ];
 
 export function formatAgentCapabilitiesContext(): string {

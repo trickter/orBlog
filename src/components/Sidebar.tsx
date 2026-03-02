@@ -1,4 +1,5 @@
 import { Github, Twitter, Mail } from 'lucide-react';
+import { normalizeUploadsPath } from '@/lib/normalize-uploads-path';
 
 interface Profile {
   name: string;
@@ -14,17 +15,21 @@ interface SidebarProps {
 }
 
 export function Sidebar({ profile }: SidebarProps) {
-  const initial = profile.name.charAt(0).toUpperCase();
+  const safeName = typeof profile.name === 'string' ? profile.name : '';
+  const initial = safeName.charAt(0).toUpperCase() || '?';
+  const avatarSrc = profile.avatar
+    ? normalizeUploadsPath(profile.avatar)
+    : null;
 
   return (
     <aside className="w-full lg:w-64 lg:flex-shrink-0">
       <div className="bg-white dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800 sticky top-20">
         <div className="flex flex-col items-center text-center">
           {/* Avatar */}
-          {profile.avatar ? (
+          {avatarSrc ? (
             <img
-              src={profile.avatar}
-              alt={profile.name}
+              src={avatarSrc}
+              alt={safeName}
               className="w-24 h-24 rounded-full mb-4 object-cover"
             />
           ) : (
@@ -35,7 +40,7 @@ export function Sidebar({ profile }: SidebarProps) {
 
           {/* Name */}
           <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-1">
-            {profile.name}
+            {safeName}
           </h2>
 
           {/* Bio */}

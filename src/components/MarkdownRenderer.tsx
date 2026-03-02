@@ -2,6 +2,7 @@ import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
 import { defaultUrlTransform } from 'react-markdown';
+import { normalizeUploadsPath } from '@/lib/normalize-uploads-path';
 
 interface MarkdownRendererProps {
   content: string;
@@ -13,13 +14,16 @@ export function MarkdownRenderer({
   className = '',
 }: MarkdownRendererProps) {
   const urlTransform = (url: string, key: string) => {
+    const normalizedUrl = key === 'src' ? normalizeUploadsPath(url) : url;
+
     if (
       key === 'src' &&
-      (url.startsWith('data:image/') || url.startsWith('blob:'))
+      (normalizedUrl.startsWith('data:image/') ||
+        normalizedUrl.startsWith('blob:'))
     ) {
-      return url;
+      return normalizedUrl;
     }
-    return defaultUrlTransform(url);
+    return defaultUrlTransform(normalizedUrl);
   };
 
   return (

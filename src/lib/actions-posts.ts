@@ -14,6 +14,8 @@ import {
   imageLookupKeys,
   rewriteMarkdownImageLinks,
 } from '@/lib/markdown-image-links';
+import { detectContentTypeByExtension } from '@/lib/mime-types';
+import { uploadToTos } from '@/lib/tos-client';
 
 export async function getPosts(categorySlug?: string) {
   return prisma.post.findMany({
@@ -127,16 +129,7 @@ export async function processZipImages(
     return content;
   }
 
-  const fs = await import('fs/promises');
   const path = await import('path');
-  const uploadDir = path.join(
-    process.cwd(),
-    'public',
-    'uploads',
-    'posts',
-    slug
-  );
-  await fs.mkdir(uploadDir, { recursive: true });
 
   const imagePathByKey = new Map<string, string>();
 
@@ -144,10 +137,17 @@ export async function processZipImages(
     const buffer = Buffer.from(img.data, 'base64');
     const ext = path.extname(img.name) || '.png';
     const filename = `${crypto.randomUUID()}${ext}`;
-    const filepath = path.join(uploadDir, filename);
-
-    await fs.writeFile(filepath, buffer);
+    // Keep Markdown URLs stable under /uploads/... while storing object keys
+    // without a leading slash for S3-compatible APIs.
     const nextPath = `/uploads/posts/${slug}/${filename}`;
+    const objectKey = nextPath.replace(/^\//, '');
+
+    await uploadToTos({
+      key: objectKey,
+      body: buffer,
+      contentType: detectContentTypeByExtension(ext),
+    });
+
     for (const key of imageLookupKeys(img.name)) {
       if (!imagePathByKey.has(key)) {
         imagePathByKey.set(key, nextPath);

@@ -15,13 +15,22 @@ describe('agent capabilities', () => {
         'update_category',
         'delete_category',
         'update_profile',
+        'storage_upload',
+        'storage_delete',
+        'storage_presigned_get',
+        'storage_exists',
       ])
     );
+  });
+
+  it('keeps all capabilities admin-only', () => {
+    expect(AGENT_CAPABILITIES.every((item) => item.requiresAdmin)).toBe(true);
   });
 
   it('formats runtime capability context', () => {
     const context = formatAgentCapabilitiesContext();
     expect(context).toContain('create_post');
+    expect(context).toContain('storage_upload');
     expect(context).toContain('admin-only');
   });
 });
