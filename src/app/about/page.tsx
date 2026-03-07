@@ -12,7 +12,7 @@ export default async function AboutPage() {
   return (
     <BlogLayout profile={profile} categories={categories}>
       <article>
-        <MarkdownRenderer content={content} />
+        <MarkdownRenderer content={content} preserveLineBreaks />
       </article>
     </BlogLayout>
   );

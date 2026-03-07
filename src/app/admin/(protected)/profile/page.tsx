@@ -2,8 +2,14 @@ import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { updateProfile } from '@/lib/actions';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
-export default async function ProfilePage() {
+interface PageProps {
+  searchParams: Promise<{ saved?: string }>;
+}
+
+export default async function ProfilePage({ searchParams }: PageProps) {
+  const { saved } = await searchParams;
   const profile = await prisma.profile.findUnique({
     where: { id: 'default' },
   });
@@ -26,6 +32,7 @@ export default async function ProfilePage() {
     const cookieStore = await cookies();
     const session = cookieStore.get('admin_session')?.value ?? null;
     await updateProfile(formData, session);
+    redirect('/admin/profile?saved=1');
   }
 
   return (
@@ -33,6 +40,12 @@ export default async function ProfilePage() {
       <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-6">
         Edit Profile
       </h1>
+
+      {saved === '1' && (
+        <div className="mb-4 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900/40 dark:bg-emerald-900/20 dark:text-emerald-300">
+          Profile saved successfully.
+        </div>
+      )}
 
       <form action={handleSubmit} className="max-w-2xl space-y-6">
         <div>
