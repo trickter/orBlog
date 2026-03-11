@@ -6,11 +6,13 @@ import { defaultUrlTransform } from 'react-markdown';
 interface MarkdownRendererProps {
   content: string;
   className?: string;
+  preserveLineBreaks?: boolean;
 }
 
 export function MarkdownRenderer({
   content,
   className = '',
+  preserveLineBreaks = false,
 }: MarkdownRendererProps) {
   const urlTransform = (url: string, key: string) => {
     if (
@@ -22,6 +24,9 @@ export function MarkdownRenderer({
     return defaultUrlTransform(url);
   };
 
+  const paragraphClass = preserveLineBreaks ? 'whitespace-pre-line' : '';
+  const listItemClass = preserveLineBreaks ? 'whitespace-pre-line' : '';
+
   return (
     <div
       className={`prose prose-slate max-w-none dark:prose-invert ${className}`}
@@ -30,6 +35,10 @@ export function MarkdownRenderer({
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}
         urlTransform={urlTransform}
+        components={{
+          p: ({ children }) => <p className={paragraphClass}>{children}</p>,
+          li: ({ children }) => <li className={listItemClass}>{children}</li>,
+        }}
       >
         {content}
       </ReactMarkdown>

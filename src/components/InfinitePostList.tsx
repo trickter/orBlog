@@ -35,6 +35,15 @@ export function InfinitePostList({
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const requestIdRef = useRef(0);
 
+  useEffect(() => {
+    requestIdRef.current += 1;
+    setPosts(initialPosts);
+    setNextCursor(initialCursor);
+    setHasMore(initialHasMore);
+    setLoading(false);
+    setError(null);
+  }, [category, initialPosts, initialCursor, initialHasMore]);
+
   const loadMore = useCallback(async () => {
     if (loading || !hasMore) {
       return;
