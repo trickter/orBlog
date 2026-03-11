@@ -4,16 +4,16 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fafaf9;
+  --foreground: #18181b;
   --font-mono: 'JetBrains Mono', monospace;
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-logo: 'Noto Serif SC', serif;
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  --background: #09090b;
+  --foreground: #e4e4e7;
 }
 
 @theme inline {
@@ -24,10 +24,23 @@
   --font-logo: var(--font-logo);
 }
 
+@media (min-width: 1024px) {
+  html {
+    font-size: 110%;
+  }
+}
+
 body {
-  background: var(--background);
+  background:
+    radial-gradient(1200px 500px at 10% -10%, rgb(244 244 245 / 70%), transparent),
+    radial-gradient(900px 450px at 100% 0%, rgb(231 229 228 / 55%), transparent),
+    var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+.dark body {
+  background: var(--background);
 }
 
 code,
@@ -38,4 +51,18 @@ pre,
 
 .font-logo {
   font-family: var(--font-logo), serif;
+}
+
+@keyframes avatar-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.avatar-float {
+  animation: avatar-float 4.8s ease-in-out infinite;
 }

@@ -18,25 +18,25 @@ export function CategoryFilter({ categories }: CategoryFilterProps) {
   const currentCategory = searchParams.get('category');
 
   return (
-    <div className="flex gap-2 overflow-x-auto pb-4 mb-4 scrollbar-hide">
+    <div className="mb-5 flex gap-2 overflow-x-auto pb-4 scrollbar-hide">
       <Link
         href="/"
-        className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+        className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
           !currentCategory
-            ? 'bg-blue-600 text-white'
-            : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+            ? 'bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-900'
+            : 'text-zinc-600 hover:bg-zinc-200/70 dark:text-zinc-400 dark:hover:bg-zinc-800/70'
         }`}
       >
-        All
+        全部
       </Link>
       {categories.map((cat) => (
         <Link
           key={cat.id}
           href={`/?category=${cat.slug}`}
-          className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+          className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
             currentCategory === cat.slug
-              ? 'bg-blue-600 text-white'
-              : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+              ? 'bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-900'
+              : 'text-zinc-600 hover:bg-zinc-200/70 dark:text-zinc-400 dark:hover:bg-zinc-800/70'
           }`}
         >
           {cat.name}

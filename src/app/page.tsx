@@ -28,7 +28,7 @@ export default async function Home({ searchParams }: PageProps) {
         <div className="text-center py-12">
           <p className="text-zinc-600 dark:text-zinc-400">
             No posts yet.{' '}
-            <Link href="/admin" className="text-blue-600 hover:underline">
+            <Link href="/admin" className="font-medium text-zinc-700 hover:underline dark:text-zinc-300">
               Create your first post
             </Link>
           </p>
