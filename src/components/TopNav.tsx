@@ -14,7 +14,7 @@ export function TopNav() {
         <div className="grid h-16 grid-cols-[auto_minmax(0,24rem)_auto] items-center gap-4">
           <Link
             href="/"
-            className="justify-self-start font-bold text-xl text-zinc-900 dark:text-zinc-100"
+            className="font-logo justify-self-start text-xl font-bold text-zinc-900 dark:text-zinc-100"
           >
             orBlog
           </Link>

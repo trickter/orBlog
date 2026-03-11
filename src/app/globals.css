@@ -8,6 +8,7 @@
   --foreground: #171717;
   --font-mono: 'JetBrains Mono', monospace;
   --font-sans: 'Inter', system-ui, sans-serif;
+  --font-logo: 'Noto Serif SC', serif;
 }
 
 .dark {
@@ -20,6 +21,7 @@
   --color-foreground: var(--foreground);
   --font-mono: var(--font-mono);
   --font-sans: var(--font-sans);
+  --font-logo: var(--font-logo);
 }
 
 body {
@@ -32,4 +34,8 @@ code,
 pre,
 .font-mono {
   font-family: var(--font-mono);
+}
+
+.font-logo {
+  font-family: var(--font-logo), serif;
 }
