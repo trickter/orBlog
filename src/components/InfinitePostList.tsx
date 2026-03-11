@@ -116,7 +116,7 @@ export function InfinitePostList({
   }, [hasMore, loadMore]);
 
   return (
-    <div className="space-y-6">
+    <div className="divide-y divide-zinc-200/70 dark:divide-zinc-800/80">
       {posts.map((post) => (
         <PostCard key={post.id} post={post} />
       ))}

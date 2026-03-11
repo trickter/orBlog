@@ -24,10 +24,10 @@ interface BlogLayoutProps {
 
 export function BlogLayout({ children, profile }: BlogLayoutProps) {
   return (
-    <div className="min-h-screen bg-white dark:bg-zinc-900">
+    <div className="min-h-screen">
       <TopNav />
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col gap-6 lg:flex-row">
           {/* Left Sidebar */}
           <Sidebar profile={profile} />
 
