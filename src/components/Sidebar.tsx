@@ -22,6 +22,9 @@ export function Sidebar({ profile }: SidebarProps) {
         <div className="flex flex-col items-center text-center">
           {/* Avatar */}
           {profile.avatar ? (
+            // profile.avatar accepts arbitrary user-provided URLs, so keep a plain img here
+            // until we intentionally constrain allowed image hosts for next/image.
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={profile.avatar}
               alt={profile.name}
