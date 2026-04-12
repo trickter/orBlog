@@ -80,11 +80,10 @@ jobs:
           rm -rf "${RELEASE_DIR}"
           mkdir -p "${RELEASE_DIR}" "${RELEASE_DIR}/.next" "${RELEASE_DIR}/prisma"
 
-          cp -R .next/standalone/. "${RELEASE_DIR}/"
-          cp -R .next/static "${RELEASE_DIR}/.next/static"
-          cp -R public "${RELEASE_DIR}/public"
-          cp prisma/schema.prisma "${RELEASE_DIR}/prisma/schema.prisma"
-          cp -R prisma/migrations "${RELEASE_DIR}/prisma/migrations"
+          tar -C .next/standalone -cf - . | tar -C "${RELEASE_DIR}" -xf -
+          tar -C .next -cf - static | tar -C "${RELEASE_DIR}/.next" -xf -
+          tar -C . -cf - public | tar -C "${RELEASE_DIR}" -xf -
+          tar -C prisma -cf - schema.prisma migrations | tar -C "${RELEASE_DIR}/prisma" -xf -
           rm -f \
             "${RELEASE_DIR}/.env" \
             "${RELEASE_DIR}/.env.local" \
