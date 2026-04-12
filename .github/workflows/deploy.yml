@@ -180,13 +180,18 @@ jobs:
           tar -tzf "${RUNNER_TEMP}/${RELEASE_ARCHIVE}" > "${RUNNER_TEMP}/archive-contents.txt"
           head -200 "${RUNNER_TEMP}/archive-contents.txt"
 
+
       - name: Upload release archive
         shell: bash
         run: |
           set -euo pipefail
-
+      
           scp \
-            -v \
+            -vv \
+            -o ConnectTimeout=15 \
+            -o ServerAliveInterval=15 \
+            -o ServerAliveCountMax=3 \
+            -o TCPKeepAlive=yes \
             -i ~/.ssh/deploy_key \
             -P "${SERVER_PORT}" \
             "${RUNNER_TEMP}/${RELEASE_ARCHIVE}" \
