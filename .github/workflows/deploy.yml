@@ -102,6 +102,14 @@ jobs:
           cp "${RUNNER_TEMP}/ci-data/dev.db" "${RELEASE_DIR}/prisma/dev.db"
 
           pushd "${RELEASE_DIR}" > /dev/null
+          echo "Smoke test working directory: $(pwd)"
+          test -f "server.js"
+          test -f "prisma/dev.db"
+          test -f "prisma/schema.prisma"
+          ls -la
+          ls -la prisma
+          find . -maxdepth 2 -type f | sort
+
           cleanup() {
             if [ -n "${SERVER_PID:-}" ]; then
               kill "${SERVER_PID}" 2>/dev/null || true
