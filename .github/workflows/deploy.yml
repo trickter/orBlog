@@ -41,6 +41,26 @@ jobs:
       - name: Prepare CI database
         run: npx prisma migrate deploy
 
+      - name: Capture CI database
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          CI_DB_PATH=""
+
+          if [ -f "prisma/ci.db" ]; then
+            CI_DB_PATH="prisma/ci.db"
+          elif [ -f "ci.db" ]; then
+            CI_DB_PATH="ci.db"
+          else
+            echo "Unable to locate ci.db after prisma migrate deploy" >&2
+            find . -maxdepth 3 -name 'ci.db' -print || true
+            exit 1
+          fi
+
+          mkdir -p "${RUNNER_TEMP}/ci-data"
+          cp "${CI_DB_PATH}" "${RUNNER_TEMP}/ci-data/dev.db"
+
       - name: Lint
         run: npm run lint
 
@@ -79,7 +99,7 @@ jobs:
 
           RELEASE_DIR="${RUNNER_TEMP}/release"
 
-          cp prisma/ci.db "${RELEASE_DIR}/prisma/dev.db"
+          cp "${RUNNER_TEMP}/ci-data/dev.db" "${RELEASE_DIR}/prisma/dev.db"
 
           pushd "${RELEASE_DIR}" > /dev/null
           cleanup() {
