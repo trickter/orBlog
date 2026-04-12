@@ -92,12 +92,13 @@ src/
 
 Create a `.env` file based on `.env.example`:
 
-| Variable | Description | Required | Default |
-|----------|-------------|----------|---------|
-| `DATABASE_URL` | SQLite database path | Yes | `file:./dev.db` |
-| `ADMIN_SECRET` | Admin password | Yes | - |
+| Variable       | Description          | Required | Default         |
+| -------------- | -------------------- | -------- | --------------- |
+| `DATABASE_URL` | SQLite database path | Yes      | `file:./dev.db` |
+| `ADMIN_SECRET` | Admin password       | Yes      | -               |
 
 Generate a secure admin secret:
+
 ```bash
 openssl rand -base64 32
 ```
@@ -119,6 +120,48 @@ npm run test:e2e:ui
 ```
 
 ## 🏗 Deployment
+
+### GitHub Actions -> Self-Hosted Server
+
+This repository can deploy automatically to the existing server directory
+`/app/ai-code/brainstorm` whenever code is pushed to `main`.
+
+Required GitHub Actions secrets:
+
+- `SERVER_HOST`
+- `SERVER_USER`
+- `SERVER_PORT`
+- `SERVER_SSH_KEY`
+
+The workflow in `.github/workflows/deploy.yml` runs:
+
+```bash
+npm ci
+npm run lint
+npm test
+npm run build
+```
+
+If those checks pass, GitHub uploads a release archive over SSH and runs
+`scripts/deploy-remote.sh` on the server. The remote deployment script then:
+
+```bash
+npm ci
+npx prisma db push --skip-generate
+npx prisma generate
+npm run build
+systemctl restart brainstorm.service
+systemctl is-active brainstorm.service
+```
+
+Important deployment notes:
+
+- The deployment target path is fixed to `/app/ai-code/brainstorm`
+- The systemd service name is fixed to `brainstorm.service`
+- The server-side `.env` file is preserved and never uploaded from GitHub
+- The server-side `prisma/dev.db` and `*.db-journal` files are preserved
+- Destructive Prisma schema changes are not forced during deployment
+- The server must already have Node.js, npm, and `systemctl` available
 
 ### Vercel (Recommended)
 
