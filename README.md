@@ -137,31 +137,97 @@ The workflow in `.github/workflows/deploy.yml` runs:
 
 ```bash
 npm ci
+npx prisma migrate deploy
 npm run lint
 npm test
 npm run build
 ```
 
-If those checks pass, GitHub uploads a release archive over SSH and runs
-`scripts/deploy-remote.sh` on the server. The remote deployment script then:
+If those checks pass, GitHub builds a Next.js standalone release bundle,
+smoke-tests it, uploads it over SSH, and runs `scripts/deploy-remote.sh` on
+the server.
+
+The remote deployment script now:
 
 ```bash
-npm ci
-npx prisma db push --skip-generate
-npx prisma generate
-npm run build
+tar -xzf /tmp/orblog-release.tgz
+ln -s shared/.env current/.env
+ln -s shared/prisma/dev.db current/prisma/dev.db
+ln -s releases/<git-sha> current
 systemctl restart brainstorm.service
 systemctl is-active brainstorm.service
+```
+
+Expected server layout:
+
+```text
+/app/ai-code/brainstorm/
+  current -> releases/<git-sha>
+  releases/
+    <git-sha>/
+      server.js
+      .next/
+      public/
+      prisma/
+  shared/
+    .env
+    prisma/
+      dev.db
 ```
 
 Important deployment notes:
 
 - The deployment target path is fixed to `/app/ai-code/brainstorm`
 - The systemd service name is fixed to `brainstorm.service`
-- The server-side `.env` file is preserved and never uploaded from GitHub
-- The server-side `prisma/dev.db` and `*.db-journal` files are preserved
-- Destructive Prisma schema changes are not forced during deployment
-- The server must already have Node.js, npm, and `systemctl` available
+- The server-side `.env` file lives at `shared/.env` and is never uploaded from GitHub
+- The server-side SQLite database lives at `shared/prisma/dev.db`
+- Each deployment creates an immutable release directory under `releases/`
+- Standard deployments do not modify the database schema
+- The server must already have Node.js and `systemctl` available
+
+Recommended `shared/.env` value for SQLite:
+
+```bash
+DATABASE_URL="file:./dev.db"
+ADMIN_SECRET="<your-admin-secret>"
+```
+
+The deployment script links `shared/prisma/dev.db` into `current/prisma/dev.db`,
+so `file:./dev.db` continues to work without storing the database in the
+release archive.
+
+Example `systemd` service:
+
+```ini
+[Unit]
+Description=orBlog standalone service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/app/ai-code/brainstorm/current
+Environment=NODE_ENV=production
+Environment=HOSTNAME=0.0.0.0
+Environment=PORT=3000
+EnvironmentFile=/app/ai-code/brainstorm/shared/.env
+ExecStart=/usr/bin/node /app/ai-code/brainstorm/current/server.js
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### Schema Migrations
+
+Prisma schema changes are handled separately from standard releases.
+
+Use the manual workflow in `.github/workflows/migrate.yml` when the repository
+contains new Prisma migrations that need to be applied to the shared SQLite
+database. That workflow uploads a small migration archive and runs
+`scripts/migrate-remote.sh` on the server.
+
+Normal content or UI deployments should continue to use `deploy.yml`.
 
 ### Vercel (Recommended)
 

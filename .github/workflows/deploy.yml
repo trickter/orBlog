@@ -17,6 +17,9 @@ jobs:
       SERVER_PATH: /app/ai-code/brainstorm
       SYSTEMD_SERVICE: brainstorm.service
       RELEASE_ARCHIVE: orblog-release.tgz
+      RELEASE_ID: ${{ github.sha }}
+      DATABASE_URL: file:./ci.db
+      ADMIN_SECRET: ci-admin-secret
       SERVER_HOST: ${{ secrets.SERVER_HOST }}
       SERVER_PORT: ${{ secrets.SERVER_PORT }}
       SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
@@ -35,6 +38,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Prepare CI database
+        run: npx prisma migrate deploy
+
       - name: Lint
         run: npm run lint
 
@@ -43,6 +49,58 @@ jobs:
 
       - name: Build application
         run: npm run build
+
+      - name: Assemble release bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          RELEASE_DIR="${RUNNER_TEMP}/release"
+
+          rm -rf "${RELEASE_DIR}"
+          mkdir -p "${RELEASE_DIR}" "${RELEASE_DIR}/.next" "${RELEASE_DIR}/prisma"
+
+          cp -R .next/standalone/. "${RELEASE_DIR}/"
+          cp -R .next/static "${RELEASE_DIR}/.next/static"
+          cp -R public "${RELEASE_DIR}/public"
+          cp prisma/schema.prisma "${RELEASE_DIR}/prisma/schema.prisma"
+          cp -R prisma/migrations "${RELEASE_DIR}/prisma/migrations"
+          rm -f \
+            "${RELEASE_DIR}/.env" \
+            "${RELEASE_DIR}/.env.local" \
+            "${RELEASE_DIR}/.env.production" \
+            "${RELEASE_DIR}/.env.production.local"
+          printf '%s\n' "${RELEASE_ID}" > "${RELEASE_DIR}/REVISION"
+
+      - name: Smoke test standalone bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          RELEASE_DIR="${RUNNER_TEMP}/release"
+
+          cp prisma/ci.db "${RELEASE_DIR}/prisma/dev.db"
+
+          pushd "${RELEASE_DIR}" > /dev/null
+          HOSTNAME=127.0.0.1 PORT=3001 node server.js > server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "${SERVER_PID}" 2>/dev/null || true' EXIT
+
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:3001/ > /dev/null; then
+              break
+            fi
+            sleep 1
+          done
+
+          curl --fail --silent http://127.0.0.1:3001/ > /dev/null
+
+          kill "${SERVER_PID}"
+          wait "${SERVER_PID}" || true
+          trap - EXIT
+          popd > /dev/null
+
+          rm -f "${RELEASE_DIR}/prisma/dev.db"
 
       - name: Prepare SSH
         shell: bash
@@ -59,22 +117,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          tar \
-            --exclude='.git' \
-            --exclude='node_modules' \
-            --exclude='.next' \
-            --exclude='.env' \
-            --exclude='.env.local' \
-            --exclude='.env.production.local' \
-            --exclude='prisma/*.db' \
-            --exclude='prisma/*.db-journal' \
-            --exclude='playwright-report' \
-            --exclude='test-results' \
-            --exclude='coverage' \
-            --exclude='playwright/.cache' \
-            --exclude='*.log' \
-            -czf "${RUNNER_TEMP}/${RELEASE_ARCHIVE}" \
-            .
+          tar -C "${RUNNER_TEMP}/release" -czf "${RUNNER_TEMP}/${RELEASE_ARCHIVE}" .
 
       - name: Upload release archive
         shell: bash
@@ -96,5 +139,5 @@ jobs:
             -i ~/.ssh/deploy_key \
             -p "${SERVER_PORT}" \
             "${SERVER_USER}@${SERVER_HOST}" \
-            "bash -s -- '${SERVER_PATH}' '${SYSTEMD_SERVICE}' '/tmp/${RELEASE_ARCHIVE}'" \
+            "bash -s -- '${SERVER_PATH}' '${SYSTEMD_SERVICE}' '/tmp/${RELEASE_ARCHIVE}' '${RELEASE_ID}'" \
             < scripts/deploy-remote.sh
