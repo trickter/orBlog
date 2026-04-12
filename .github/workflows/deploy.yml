@@ -177,7 +177,8 @@ jobs:
         run: |
           set -euo pipefail
 
-          tar -tzf "${RUNNER_TEMP}/${RELEASE_ARCHIVE}" | head -200
+          tar -tzf "${RUNNER_TEMP}/${RELEASE_ARCHIVE}" > "${RUNNER_TEMP}/archive-contents.txt"
+          head -200 "${RUNNER_TEMP}/archive-contents.txt"
 
       - name: Upload release archive
         shell: bash
