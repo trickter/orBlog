@@ -94,7 +94,7 @@ Create a `.env` file based on `.env.example`:
 
 | Variable       | Description          | Required | Default         |
 | -------------- | -------------------- | -------- | --------------- |
-| `DATABASE_URL` | SQLite database path | Yes      | `file:./dev.db` |
+| `DATABASE_URL` | SQLite database path | Yes      | `file:./prisma/dev.db` |
 | `ADMIN_SECRET` | Admin password       | Yes      | -               |
 
 Generate a secure admin secret:
@@ -188,12 +188,12 @@ Important deployment notes:
 Recommended `shared/.env` value for SQLite:
 
 ```bash
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="file:./prisma/dev.db"
 ADMIN_SECRET="<your-admin-secret>"
 ```
 
 The deployment script links `shared/prisma/dev.db` into `current/prisma/dev.db`,
-so `file:./dev.db` continues to work without storing the database in the
+so `file:./prisma/dev.db` continues to work without storing the database in the
 release archive.
 
 Example `systemd` service:

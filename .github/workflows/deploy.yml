@@ -91,7 +91,7 @@ jobs:
 
           trap cleanup EXIT
 
-          DATABASE_URL=file:./dev.db \
+          DATABASE_URL=file:./prisma/dev.db \
           ADMIN_SECRET="${ADMIN_SECRET}" \
           HOSTNAME=127.0.0.1 \
           PORT=3001 \
