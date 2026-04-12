@@ -82,21 +82,39 @@ jobs:
           cp prisma/ci.db "${RELEASE_DIR}/prisma/dev.db"
 
           pushd "${RELEASE_DIR}" > /dev/null
-          HOSTNAME=127.0.0.1 PORT=3001 node server.js > server.log 2>&1 &
+          cleanup() {
+            if [ -n "${SERVER_PID:-}" ]; then
+              kill "${SERVER_PID}" 2>/dev/null || true
+              wait "${SERVER_PID}" 2>/dev/null || true
+            fi
+          }
+
+          trap cleanup EXIT
+
+          DATABASE_URL=file:./dev.db \
+          ADMIN_SECRET="${ADMIN_SECRET}" \
+          HOSTNAME=127.0.0.1 \
+          PORT=3001 \
+          node server.js > server.log 2>&1 &
           SERVER_PID=$!
-          trap 'kill "${SERVER_PID}" 2>/dev/null || true' EXIT
 
           for attempt in {1..30}; do
             if curl --fail --silent http://127.0.0.1:3001/ > /dev/null; then
               break
             fi
+            if ! kill -0 "${SERVER_PID}" 2>/dev/null; then
+              cat server.log
+              exit 1
+            fi
             sleep 1
           done
 
-          curl --fail --silent http://127.0.0.1:3001/ > /dev/null
+          if ! curl --fail --silent http://127.0.0.1:3001/ > /dev/null; then
+            cat server.log
+            exit 1
+          fi
 
-          kill "${SERVER_PID}"
-          wait "${SERVER_PID}" || true
+          cleanup
           trap - EXIT
           popd > /dev/null
 
