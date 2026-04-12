@@ -1,9 +1,12 @@
 import Link from 'next/link';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
 import { DeleteButton } from '@/components/DeleteCategoryButton';
+import { requireAdminAuth } from '@/lib/auth';
 
 export default async function CategoriesPage() {
-  const categories = await prisma.category.findMany({
+  await requireAdminAuth();
+
+  const categories = await getPrisma().category.findMany({
     orderBy: { name: 'asc' },
     include: { _count: { select: { posts: true } } },
   });
@@ -46,30 +49,37 @@ export default async function CategoriesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
-              {categories.map((category) => (
-                <tr key={category.id}>
-                  <td className="px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100">
-                    {category.name}
-                  </td>
-                  <td className="px-4 py-3 text-sm text-zinc-500 dark:text-zinc-400">
-                    {category.slug}
-                  </td>
-                  <td className="px-4 py-3 text-sm text-zinc-500 dark:text-zinc-400">
-                    {category._count.posts}
-                  </td>
-                  <td className="px-4 py-3 text-right text-sm">
-                    <div className="flex gap-2 justify-end">
-                      <Link
-                        href={`/admin/categories/${category.id}`}
-                        className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-                      >
-                        Edit
-                      </Link>
-                      <DeleteButton id={category.id} />
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {categories.map(
+                (category: {
+                  id: string;
+                  name: string;
+                  slug: string;
+                  _count: { posts: number };
+                }) => (
+                  <tr key={category.id}>
+                    <td className="px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100">
+                      {category.name}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-zinc-500 dark:text-zinc-400">
+                      {category.slug}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-zinc-500 dark:text-zinc-400">
+                      {category._count.posts}
+                    </td>
+                    <td className="px-4 py-3 text-right text-sm">
+                      <div className="flex gap-2 justify-end">
+                        <Link
+                          href={`/admin/categories/${category.id}`}
+                          className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                        >
+                          Edit
+                        </Link>
+                        <DeleteButton id={category.id} />
+                      </div>
+                    </td>
+                  </tr>
+                )
+              )}
             </tbody>
           </table>
         </div>

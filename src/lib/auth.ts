@@ -68,19 +68,21 @@ export function verifySessionToken(token: string): boolean {
   }
 }
 
-export async function requireAdminAuth(): Promise<void> {
-  const adminSecret = process.env.ADMIN_SECRET;
-
-  // Fail-closed: deny access if ADMIN_SECRET is not configured
-  if (!adminSecret) {
-    redirect('/admin/login');
+export function isAdminSessionAuthorized(
+  sessionToken: string | null | undefined
+): boolean {
+  if (!process.env.ADMIN_SECRET || !sessionToken) {
+    return false;
   }
 
-  // Check cookie session
+  return verifySessionToken(sessionToken);
+}
+
+export async function requireAdminAuth(): Promise<void> {
   const cookieStore = await cookies();
   const sessionToken = cookieStore.get('admin_session')?.value;
 
-  if (!sessionToken || !verifySessionToken(sessionToken)) {
+  if (!isAdminSessionAuthorized(sessionToken)) {
     redirect('/admin/login');
   }
 }

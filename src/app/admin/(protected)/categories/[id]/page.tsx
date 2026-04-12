@@ -1,16 +1,19 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
 import { updateCategory } from '@/lib/actions';
 import { cookies } from 'next/headers';
+import { requireAdminAuth } from '@/lib/auth';
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
 export default async function EditCategoryPage({ params }: PageProps) {
+  await requireAdminAuth();
+
   const { id } = await params;
-  const category = await prisma.category.findUnique({
+  const category = await getPrisma().category.findUnique({
     where: { id },
   });
 

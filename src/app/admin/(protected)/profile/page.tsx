@@ -1,16 +1,19 @@
 import Link from 'next/link';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
 import { updateProfile } from '@/lib/actions';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { requireAdminAuth } from '@/lib/auth';
 
 interface PageProps {
   searchParams: Promise<{ saved?: string }>;
 }
 
 export default async function ProfilePage({ searchParams }: PageProps) {
+  await requireAdminAuth();
+
   const { saved } = await searchParams;
-  const profile = await prisma.profile.findUnique({
+  const profile = await getPrisma().profile.findUnique({
     where: { id: 'default' },
   });
 

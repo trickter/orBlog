@@ -1,8 +1,8 @@
 import { slugify, verifyAdmin } from '@/lib/action-helpers';
-import { verifySessionToken } from '@/lib/auth';
+import { isAdminSessionAuthorized } from '@/lib/auth';
 
 jest.mock('@/lib/auth', () => ({
-  verifySessionToken: jest.fn(),
+  isAdminSessionAuthorized: jest.fn(),
 }));
 
 describe('slugify', () => {
@@ -41,6 +41,7 @@ describe('slugify', () => {
 describe('verifyAdmin', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    (isAdminSessionAuthorized as jest.Mock).mockReturnValue(false);
   });
 
   it('returns false for null session', () => {
@@ -51,14 +52,14 @@ describe('verifyAdmin', () => {
     expect(verifyAdmin('')).toBe(false);
   });
 
-  it('calls verifySessionToken for valid session', () => {
-    (verifySessionToken as jest.Mock).mockReturnValue(true);
+  it('calls isAdminSessionAuthorized for valid session', () => {
+    (isAdminSessionAuthorized as jest.Mock).mockReturnValue(true);
     expect(verifyAdmin('valid-token')).toBe(true);
-    expect(verifySessionToken).toHaveBeenCalledWith('valid-token');
+    expect(isAdminSessionAuthorized).toHaveBeenCalledWith('valid-token');
   });
 
   it('returns false for invalid session', () => {
-    (verifySessionToken as jest.Mock).mockReturnValue(false);
+    (isAdminSessionAuthorized as jest.Mock).mockReturnValue(false);
     expect(verifyAdmin('invalid-token')).toBe(false);
   });
 });

@@ -1,8 +1,11 @@
 import Link from 'next/link';
 import { createCategory } from '@/lib/actions';
 import { cookies } from 'next/headers';
+import { requireAdminAuth } from '@/lib/auth';
 
-export default function NewCategoryPage() {
+export default async function NewCategoryPage() {
+  await requireAdminAuth();
+
   async function handleSubmit(formData: FormData) {
     'use server';
     const cookieStore = await cookies();

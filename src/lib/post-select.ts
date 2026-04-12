@@ -1,5 +1,3 @@
-import { Prisma } from '@prisma/client';
-
 export const postWithCategorySelect = {
   id: true,
   title: true,
@@ -16,11 +14,11 @@ export const postWithCategorySelect = {
       slug: true,
     },
   },
-} satisfies Prisma.PostSelect;
+};
 
 export const postDropdownSelect = {
   id: true,
   title: true,
   slug: true,
   createdAt: true,
-} satisfies Prisma.PostSelect;
+};

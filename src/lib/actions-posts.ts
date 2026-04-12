@@ -1,6 +1,6 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { postDropdownSelect, postWithCategorySelect } from '@/lib/post-select';
@@ -16,7 +16,7 @@ import {
 } from '@/lib/markdown-image-links';
 
 export async function getPosts(categorySlug?: string) {
-  return prisma.post.findMany({
+  return getPrisma().post.findMany({
     where: {
       published: true,
       ...(categorySlug ? { category: { slug: categorySlug } } : {}),
@@ -27,28 +27,28 @@ export async function getPosts(categorySlug?: string) {
 }
 
 export async function getAllPosts() {
-  return prisma.post.findMany({
+  return getPrisma().post.findMany({
     orderBy: { createdAt: 'desc' },
     select: postWithCategorySelect,
   });
 }
 
 export async function getPostBySlug(slug: string) {
-  return prisma.post.findUnique({
+  return getPrisma().post.findUnique({
     where: { slug },
     select: postWithCategorySelect,
   });
 }
 
 export async function incrementViewCount(postId: string) {
-  await prisma.post.update({
+  await getPrisma().post.update({
     where: { id: postId },
     data: { viewCount: { increment: 1 } },
   });
 }
 
 export async function searchPosts(query: string) {
-  return prisma.post.findMany({
+  return getPrisma().post.findMany({
     where: {
       published: true,
       OR: [{ title: { contains: query } }, { content: { contains: query } }],
@@ -67,7 +67,7 @@ export async function searchPostsForDropdown(query: string) {
     return [];
   }
 
-  return prisma.post.findMany({
+  return getPrisma().post.findMany({
     where: {
       published: true,
       title: { contains: normalized },
@@ -184,7 +184,7 @@ export async function createPost(
   }
 
   let slug = slugify(title);
-  const existing = await prisma.post.findUnique({ where: { slug } });
+  const existing = await getPrisma().post.findUnique({ where: { slug } });
   if (existing) {
     slug = `${slug}-${Date.now()}`;
   }
@@ -196,7 +196,7 @@ export async function createPost(
     slug
   );
 
-  await prisma.post.create({
+  await getPrisma().post.create({
     data: {
       title,
       slug,
@@ -229,7 +229,7 @@ export async function updatePost(
     throw new Error('ID, title and content are required');
   }
 
-  const currentPost = await prisma.post.findUnique({
+  const currentPost = await getPrisma().post.findUnique({
     where: { id },
     select: { slug: true, title: true },
   });
@@ -240,13 +240,13 @@ export async function updatePost(
   let slug = currentPost.slug;
   if (title !== currentPost.title) {
     slug = slugify(title);
-    const existing = await prisma.post.findUnique({ where: { slug } });
+    const existing = await getPrisma().post.findUnique({ where: { slug } });
     if (existing && existing.id !== id) {
       slug = `${slug}-${Date.now()}`;
     }
   }
 
-  await prisma.post.update({
+  await getPrisma().post.update({
     where: { id },
     data: {
       title,
@@ -268,7 +268,7 @@ export async function deletePost(id: string, adminSecret: string | null) {
     throw new Error('Unauthorized');
   }
 
-  const post = await prisma.post.findUnique({
+  const post = await getPrisma().post.findUnique({
     where: { id },
     select: { slug: true },
   });
@@ -277,7 +277,7 @@ export async function deletePost(id: string, adminSecret: string | null) {
     throw new Error('Post not found');
   }
 
-  await prisma.post.delete({ where: { id } });
+  await getPrisma().post.delete({ where: { id } });
 
   revalidatePath('/');
   revalidatePath(`/posts/${post.slug}`);

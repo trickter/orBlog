@@ -1,13 +1,27 @@
-import { Prisma } from '@prisma/client';
-import { postDropdownSelect, postWithCategorySelect } from '@/lib/post-select';
+interface PostCategory {
+  id: string;
+  name: string;
+  slug: string;
+}
 
-export type PostWithCategory = Prisma.PostGetPayload<{
-  select: typeof postWithCategorySelect;
-}>;
+export interface PostWithCategory {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  published: boolean;
+  viewCount: number;
+  createdAt: Date;
+  updatedAt: Date;
+  category: PostCategory | null;
+}
 
-export type PostDropdownItem = Prisma.PostGetPayload<{
-  select: typeof postDropdownSelect;
-}>;
+export interface PostDropdownItem {
+  id: string;
+  title: string;
+  slug: string;
+  createdAt: Date;
+}
 
 export interface PostCardData {
   id: string;

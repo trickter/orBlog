@@ -1,24 +1,24 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { slugify, verifyAdmin } from '@/lib/action-helpers';
 import { postWithCategorySelect } from '@/lib/post-select';
 
 export async function getCategories() {
-  return prisma.category.findMany({
+  return getPrisma().category.findMany({
     orderBy: { name: 'asc' },
   });
 }
 
 export async function getCategoryBySlug(slug: string) {
-  return prisma.category.findUnique({
+  return getPrisma().category.findUnique({
     where: { slug },
   });
 }
 
 export async function getPostsByCategory(categorySlug: string) {
-  return prisma.post.findMany({
+  return getPrisma().post.findMany({
     where: {
       published: true,
       category: { slug: categorySlug },
@@ -42,12 +42,12 @@ export async function createCategory(
   }
 
   const slug = slugify(name);
-  const existing = await prisma.category.findUnique({ where: { slug } });
+  const existing = await getPrisma().category.findUnique({ where: { slug } });
   if (existing) {
     throw new Error('Category already exists');
   }
 
-  await prisma.category.create({
+  await getPrisma().category.create({
     data: { name, slug },
   });
 
@@ -70,12 +70,12 @@ export async function updateCategory(
   }
 
   const slug = slugify(name);
-  const existing = await prisma.category.findUnique({ where: { slug } });
+  const existing = await getPrisma().category.findUnique({ where: { slug } });
   if (existing && existing.id !== id) {
     throw new Error('Category name already exists');
   }
 
-  await prisma.category.update({
+  await getPrisma().category.update({
     where: { id },
     data: { name, slug },
   });
@@ -89,7 +89,7 @@ export async function deleteCategory(id: string, adminSecret: string | null) {
     throw new Error('Unauthorized');
   }
 
-  await prisma.category.delete({ where: { id } });
+  await getPrisma().category.delete({ where: { id } });
 
   revalidatePath('/');
   revalidatePath('/admin');

@@ -9,6 +9,8 @@ interface PageProps {
   searchParams: Promise<{ q?: string }>;
 }
 
+type SearchPost = Awaited<ReturnType<typeof searchPosts>>[number];
+
 export default async function SearchPage({ searchParams }: PageProps) {
   const { q } = await searchParams;
   const query = q || '';
@@ -30,7 +32,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
         </p>
       ) : (
         <div className="space-y-6">
-          {posts.map((post) => (
+          {posts.map((post: SearchPost) => (
             <PostCard key={post.id} post={post} />
           ))}
         </div>

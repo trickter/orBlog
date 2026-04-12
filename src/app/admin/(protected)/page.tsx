@@ -3,10 +3,15 @@ import { getAllPosts, deletePost } from '@/lib/actions';
 import { formatDate } from '@/lib/utils';
 import { cookies } from 'next/headers';
 import { DeletePostButton } from '@/components/DeletePostButton';
+import { requireAdminAuth } from '@/lib/auth';
 
 export const revalidate = 0;
 
+type AdminPost = Awaited<ReturnType<typeof getAllPosts>>[number];
+
 export default async function AdminPage() {
+  await requireAdminAuth();
+
   const cookieStore = await cookies();
   const session = cookieStore.get('admin_session')?.value ?? null;
   const posts = await getAllPosts();
@@ -52,7 +57,7 @@ export default async function AdminPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
-              {posts.map((post) => (
+              {posts.map((post: AdminPost) => (
                 <tr key={post.id}>
                   <td className="px-4 py-3">
                     <Link

@@ -1,4 +1,4 @@
-import { verifySessionToken } from '@/lib/auth';
+import { isAdminSessionAuthorized } from '@/lib/auth';
 
 export function slugify(text: string): string {
   return text
@@ -10,6 +10,5 @@ export function slugify(text: string): string {
 }
 
 export function verifyAdmin(session: string | null): boolean {
-  if (!session) return false;
-  return verifySessionToken(session);
+  return isAdminSessionAuthorized(session);
 }

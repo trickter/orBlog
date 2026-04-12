@@ -1,4 +1,8 @@
-import { createSessionToken, verifySessionToken } from '@/lib/auth';
+import {
+  createSessionToken,
+  isAdminSessionAuthorized,
+  verifySessionToken,
+} from '@/lib/auth';
 
 describe('auth', () => {
   const originalEnv = process.env;
@@ -53,6 +57,21 @@ describe('auth', () => {
       expect(typeof result).toBe('boolean');
     });
   });
+
+  describe('isAdminSessionAuthorized', () => {
+    it('returns false when token is missing', () => {
+      expect(isAdminSessionAuthorized(null)).toBe(false);
+    });
+
+    it('returns false when token is invalid', () => {
+      expect(isAdminSessionAuthorized('invalid-token')).toBe(false);
+    });
+
+    it('returns true when token is valid and secret exists', () => {
+      const token = createSessionToken();
+      expect(isAdminSessionAuthorized(token)).toBe(true);
+    });
+  });
 });
 
 describe('auth without ADMIN_SECRET', () => {
@@ -71,5 +90,9 @@ describe('auth without ADMIN_SECRET', () => {
     expect(() => createSessionToken()).toThrow(
       'ADMIN_SECRET is not configured'
     );
+  });
+
+  it('fails closed for auth checks when ADMIN_SECRET is not configured', () => {
+    expect(isAdminSessionAuthorized('s:anything')).toBe(false);
   });
 });

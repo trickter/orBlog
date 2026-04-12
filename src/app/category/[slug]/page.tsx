@@ -10,6 +10,8 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+type CategoryPost = Awaited<ReturnType<typeof getPostsByCategory>>[number];
+
 export default async function CategoryPage({ params }: PageProps) {
   const { slug } = await params;
   const [category, posts, shell] = await Promise.all([
@@ -35,7 +37,7 @@ export default async function CategoryPage({ params }: PageProps) {
         </p>
       ) : (
         <div className="space-y-6">
-          {posts.map((post) => (
+          {posts.map((post: CategoryPost) => (
             <PostCard key={post.id} post={post} />
           ))}
         </div>

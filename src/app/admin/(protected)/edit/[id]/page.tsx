@@ -1,15 +1,23 @@
 import { notFound } from 'next/navigation';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
 import { updatePost, getCategories } from '@/lib/actions';
 import { cookies } from 'next/headers';
+import { requireAdminAuth } from '@/lib/auth';
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+interface CategoryOption {
+  id: string;
+  name: string;
+}
+
 export default async function EditPostPage({ params }: PageProps) {
+  await requireAdminAuth();
+
   const { id } = await params;
-  const post = await prisma.post.findUnique({
+  const post = await getPrisma().post.findUnique({
     where: { id },
   });
   const categories = await getCategories();
@@ -57,7 +65,7 @@ export default async function EditPostPage({ params }: PageProps) {
             className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
           >
             <option value="">No category</option>
-            {categories.map((cat) => (
+            {categories.map((cat: CategoryOption) => (
               <option key={cat.id} value={cat.id}>
                 {cat.name}
               </option>

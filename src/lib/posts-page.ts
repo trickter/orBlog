@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
 import { postWithCategorySelect } from '@/lib/post-select';
 import { PostWithCategory } from '@/lib/post-types';
 import { FEED_PAGE_DEFAULT_LIMIT, FEED_PAGE_MAX_LIMIT } from '@/lib/constants';
@@ -22,7 +22,7 @@ export async function getPostsPage({
 }: GetPostsPageOptions = {}): Promise<PostsPageResult> {
   const pageSize = Math.min(Math.max(limit, 1), FEED_PAGE_MAX_LIMIT);
 
-  const posts = await prisma.post.findMany({
+  const posts = await getPrisma().post.findMany({
     where: {
       published: true,
       ...(categorySlug ? { category: { slug: categorySlug } } : {}),
