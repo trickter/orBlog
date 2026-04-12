@@ -126,7 +126,7 @@ jobs:
           SERVER_PID=$!
 
           for attempt in {1..30}; do
-            if curl --fail --silent http://127.0.0.1:3001/ > /dev/null; then
+            if curl --fail --silent http://127.0.0.1:3001/admin/login > /dev/null; then
               break
             fi
             if ! kill -0 "${SERVER_PID}" 2>/dev/null; then
@@ -136,7 +136,7 @@ jobs:
             sleep 1
           done
 
-          if ! curl --fail --silent http://127.0.0.1:3001/ > /dev/null; then
+          if ! curl --fail --silent http://127.0.0.1:3001/admin/login > /dev/null; then
             cat server.log
             exit 1
           fi
