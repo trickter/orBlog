@@ -164,12 +164,28 @@ jobs:
 
           tar -C "${RUNNER_TEMP}/release" -czf "${RUNNER_TEMP}/${RELEASE_ARCHIVE}" .
 
+      - name: Show release archive info
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          ls -lh "${RUNNER_TEMP}/${RELEASE_ARCHIVE}"
+          du -h "${RUNNER_TEMP}/${RELEASE_ARCHIVE}"
+
+      - name: Inspect archive contents
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          tar -tzf "${RUNNER_TEMP}/${RELEASE_ARCHIVE}" | head -200
+
       - name: Upload release archive
         shell: bash
         run: |
           set -euo pipefail
 
           scp \
+            -v \
             -i ~/.ssh/deploy_key \
             -P "${SERVER_PORT}" \
             "${RUNNER_TEMP}/${RELEASE_ARCHIVE}" \
