@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getPostBySlug } from '@/lib/actions';
+import { getPostBySlug, getPublishedPostSlugs } from '@/lib/actions';
 import { formatDate } from '@/lib/utils';
 import { BlogLayout } from '@/components/BlogLayout';
 import { ViewCounter } from '@/components/ViewCounter';
@@ -11,6 +11,14 @@ export const revalidate = 300;
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateStaticParams() {
+  const posts = await getPublishedPostSlugs();
+
+  return posts.map((post) => ({
+    slug: post.slug,
+  }));
 }
 
 export default async function PostPage({ params }: PageProps) {

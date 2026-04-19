@@ -31,6 +31,18 @@ export async function getPosts(categorySlug?: string) {
   });
 }
 
+export async function getPublishedPostSlugs() {
+  return getPrisma().post.findMany({
+    where: {
+      published: true,
+    },
+    orderBy: { createdAt: 'desc' },
+    select: {
+      slug: true,
+    },
+  });
+}
+
 export async function getAllPosts() {
   return getPrisma().post.findMany({
     orderBy: { createdAt: 'desc' },
@@ -214,6 +226,9 @@ export async function createPost(
   });
 
   revalidatePath('/');
+  if (published) {
+    revalidatePath(`/posts/${slug}`);
+  }
   revalidatePath('/admin');
   redirect(published ? '/' : '/admin');
 }
@@ -269,6 +284,9 @@ export async function updatePost(
 
   revalidatePath('/');
   revalidatePath(`/posts/${currentPost.slug}`);
+  if (published && slug !== currentPost.slug) {
+    revalidatePath(`/posts/${slug}`);
+  }
   revalidatePath('/admin');
   redirect(published ? `/posts/${slug}` : '/admin');
 }

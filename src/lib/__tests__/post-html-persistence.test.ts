@@ -38,6 +38,8 @@ describe('post HTML persistence', () => {
     expect(payload.content).toBe('# Heading');
     expect(compileMarkdownToHtml).toHaveBeenCalledWith('# Heading');
     expect(payload.contentHtml).toBe('<p># Heading</p>');
+    const nextCache = await import('next/cache');
+    expect(nextCache.revalidatePath).toHaveBeenCalledWith('/posts/hello-world');
   });
 
   it('persists compiled HTML when updating a post', async () => {
@@ -75,5 +77,41 @@ describe('post HTML persistence', () => {
       '```js\nconsole.log(1)\n```'
     );
     expect(payload.contentHtml).toBe('<p>```js\nconsole.log(1)\n```</p>');
+    const nextCache = await import('next/cache');
+    expect(nextCache.revalidatePath).toHaveBeenCalledWith('/posts/hello-world');
+  });
+
+  it('revalidates both old and new detail paths when a published slug changes', async () => {
+    const findUnique = jest
+      .fn()
+      .mockResolvedValueOnce({ slug: 'hello-world', title: 'Hello World' })
+      .mockResolvedValueOnce(null);
+    const update = jest.fn().mockResolvedValue(undefined);
+
+    jest.doMock('@/lib/prisma', () => ({
+      getPrisma: () => ({
+        post: {
+          findUnique,
+          update,
+        },
+      }),
+    }));
+    jest.doMock('@/lib/action-helpers', () => ({
+      slugify: (value: string) => value.toLowerCase().replace(/\s+/g, '-'),
+      verifyAdmin: () => true,
+    }));
+
+    const { updatePost } = await import('@/lib/actions-posts');
+    const nextCache = await import('next/cache');
+    const formData = new FormData();
+    formData.set('id', 'post-1');
+    formData.set('title', 'Hello Next');
+    formData.set('content', 'updated');
+    formData.set('published', 'on');
+
+    await updatePost(formData, 'session-token');
+
+    expect(nextCache.revalidatePath).toHaveBeenCalledWith('/posts/hello-world');
+    expect(nextCache.revalidatePath).toHaveBeenCalledWith('/posts/hello-next');
   });
 });
