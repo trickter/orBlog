@@ -1,8 +1,9 @@
 'use server';
 
 import { getPrisma } from '@/lib/prisma';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { verifyAdmin } from '@/lib/action-helpers';
+import { BLOG_SHELL_CACHE_TAG } from '@/lib/constants';
 
 export async function getProfile() {
   const profile = await getPrisma().profile.findUnique({
@@ -64,4 +65,5 @@ export async function updateProfile(
   revalidatePath('/');
   revalidatePath('/about');
   revalidatePath('/admin');
+  revalidateTag(BLOG_SHELL_CACHE_TAG);
 }

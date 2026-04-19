@@ -17,6 +17,7 @@ jest.mock('next/navigation', () => ({
 jest.mock('next/cache', () => ({
   revalidatePath: jest.fn(),
   revalidateTag: jest.fn(),
+  unstable_cache: jest.fn((fn: (...args: unknown[]) => unknown) => fn),
 }));
 
 // Mock crypto.randomUUID
