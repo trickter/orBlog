@@ -6,9 +6,8 @@ import { formatDate } from '@/lib/utils';
 import { BlogLayout } from '@/components/BlogLayout';
 import { ViewCounter } from '@/components/ViewCounter';
 import { loadBlogShellData } from '@/lib/blog-shell';
-import { POST_PAGE_REVALIDATE_SECONDS } from '@/lib/constants';
 
-export const revalidate = POST_PAGE_REVALIDATE_SECONDS;
+export const revalidate = 300;
 
 interface PageProps {
   params: Promise<{ slug: string }>;

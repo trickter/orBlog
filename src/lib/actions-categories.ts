@@ -4,7 +4,10 @@ import { getPrisma } from '@/lib/prisma';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { slugify, verifyAdmin } from '@/lib/action-helpers';
 import { postWithCategorySelect } from '@/lib/post-select';
-import { BLOG_SHELL_CACHE_TAG } from '@/lib/constants';
+import {
+  BLOG_SHELL_CACHE_TAG,
+  BLOG_SHELL_REVALIDATE_PROFILE,
+} from '@/lib/constants';
 
 export async function getCategories() {
   return getPrisma().category.findMany({
@@ -54,7 +57,7 @@ export async function createCategory(
 
   revalidatePath('/');
   revalidatePath('/admin');
-  revalidateTag(BLOG_SHELL_CACHE_TAG);
+  revalidateTag(BLOG_SHELL_CACHE_TAG, BLOG_SHELL_REVALIDATE_PROFILE);
 }
 
 export async function updateCategory(
@@ -84,7 +87,7 @@ export async function updateCategory(
 
   revalidatePath('/');
   revalidatePath('/admin');
-  revalidateTag(BLOG_SHELL_CACHE_TAG);
+  revalidateTag(BLOG_SHELL_CACHE_TAG, BLOG_SHELL_REVALIDATE_PROFILE);
 }
 
 export async function deleteCategory(id: string, adminSecret: string | null) {
@@ -96,7 +99,7 @@ export async function deleteCategory(id: string, adminSecret: string | null) {
 
   revalidatePath('/');
   revalidatePath('/admin');
-  revalidateTag(BLOG_SHELL_CACHE_TAG);
+  revalidateTag(BLOG_SHELL_CACHE_TAG, BLOG_SHELL_REVALIDATE_PROFILE);
 }
 
 export async function deleteCategoryFromClient(id: string) {

@@ -1,7 +1,7 @@
 export const FEED_PAGE_DEFAULT_LIMIT = 10;
 export const FEED_PAGE_MAX_LIMIT = 20;
-export const POST_PAGE_REVALIDATE_SECONDS = 300;
 export const BLOG_SHELL_CACHE_TAG = 'blog-shell';
+export const BLOG_SHELL_REVALIDATE_PROFILE = 'max';
 export const BLOG_SHELL_REVALIDATE_SECONDS = 300;
 
 export const SEARCH_DROPDOWN_MIN_QUERY = 2;

@@ -1,6 +1,9 @@
 /** @jest-environment node */
 
-import { BLOG_SHELL_CACHE_TAG } from '@/lib/constants';
+import {
+  BLOG_SHELL_CACHE_TAG,
+  BLOG_SHELL_REVALIDATE_PROFILE,
+} from '@/lib/constants';
 
 describe('shell cache invalidation', () => {
   beforeEach(() => {
@@ -31,7 +34,10 @@ describe('shell cache invalidation', () => {
     await updateProfile(formData, 'session-token');
 
     expect(upsert).toHaveBeenCalledTimes(1);
-    expect(nextCache.revalidateTag).toHaveBeenCalledWith(BLOG_SHELL_CACHE_TAG);
+    expect(nextCache.revalidateTag).toHaveBeenCalledWith(
+      BLOG_SHELL_CACHE_TAG,
+      BLOG_SHELL_REVALIDATE_PROFILE
+    );
   });
 
   it('invalidates the blog shell cache after category creation', async () => {
@@ -60,6 +66,9 @@ describe('shell cache invalidation', () => {
 
     expect(findUnique).toHaveBeenCalledTimes(1);
     expect(create).toHaveBeenCalledTimes(1);
-    expect(nextCache.revalidateTag).toHaveBeenCalledWith(BLOG_SHELL_CACHE_TAG);
+    expect(nextCache.revalidateTag).toHaveBeenCalledWith(
+      BLOG_SHELL_CACHE_TAG,
+      BLOG_SHELL_REVALIDATE_PROFILE
+    );
   });
 });
