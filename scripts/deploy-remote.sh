@@ -3,12 +3,12 @@
 set -euo pipefail
 
 APP_DIR="${1:-/app/ai-code/brainstorm}"
-SERVICE_NAME="${2:-brainstorm.service}"
+SERVICE_NAMES="${2:-brainstorm.service}"
 ARCHIVE_PATH="${3:-}"
 RELEASE_ID="${4:-$(date -u +%Y%m%d%H%M%S)}"
 
 if [ -z "${ARCHIVE_PATH}" ]; then
-  echo "Usage: $0 <app_dir> <service_name> <archive_path> [release_id]" >&2
+  echo "Usage: $0 <app_dir> <service_names> <archive_path> [release_id]" >&2
   exit 1
 fi
 
@@ -71,7 +71,19 @@ ln -sfn "${SHARED_DIR}/prisma/dev.db" "${NEW_RELEASE_DIR}/prisma/dev.db"
 ln -sfn "${NEW_RELEASE_DIR}" "${TMP_CURRENT_LINK}"
 mv -Tf "${TMP_CURRENT_LINK}" "${CURRENT_LINK}"
 
-systemctl restart "${SERVICE_NAME}"
-systemctl is-active --quiet "${SERVICE_NAME}"
+IFS=',' read -r -a SERVICES <<< "${SERVICE_NAMES}"
 
-echo "Deployment completed for ${SERVICE_NAME} using release ${RELEASE_ID}"
+if [ "${#SERVICES[@]}" -eq 0 ]; then
+  echo "At least one systemd service must be provided." >&2
+  exit 1
+fi
+
+for SERVICE_NAME in "${SERVICES[@]}"; do
+  systemctl restart "${SERVICE_NAME}"
+done
+
+for SERVICE_NAME in "${SERVICES[@]}"; do
+  systemctl is-active --quiet "${SERVICE_NAME}"
+done
+
+echo "Deployment completed for ${SERVICE_NAMES} using release ${RELEASE_ID}"

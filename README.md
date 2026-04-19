@@ -154,8 +154,12 @@ tar -xzf /tmp/orblog-release.tgz
 ln -s shared/.env current/.env
 ln -s shared/prisma/dev.db current/prisma/dev.db
 ln -s releases/<git-sha> current
-systemctl restart brainstorm.service
-systemctl is-active brainstorm.service
+systemctl restart brainstorm@5000.service
+systemctl restart brainstorm@5001.service
+systemctl restart brainstorm@5002.service
+systemctl is-active brainstorm@5000.service
+systemctl is-active brainstorm@5001.service
+systemctl is-active brainstorm@5002.service
 ```
 
 Expected server layout:
@@ -178,7 +182,7 @@ Expected server layout:
 Important deployment notes:
 
 - The deployment target path is fixed to `/app/ai-code/brainstorm`
-- The systemd service name is fixed to `brainstorm.service`
+- The deploy workflow restarts the configured systemd services list
 - The server-side `.env` file lives at `shared/.env` and is never uploaded from GitHub
 - The server-side SQLite database lives at `shared/prisma/dev.db`
 - Each deployment creates an immutable release directory under `releases/`
@@ -196,11 +200,11 @@ The deployment script links `shared/prisma/dev.db` into `current/prisma/dev.db`,
 so `file:./dev.db` continues to work without storing the database in the
 release archive.
 
-Example `systemd` service:
+Example `systemd` template service:
 
 ```ini
 [Unit]
-Description=orBlog standalone service
+Description=orBlog standalone service (%i)
 After=network.target
 
 [Service]
@@ -208,7 +212,7 @@ Type=simple
 WorkingDirectory=/app/ai-code/brainstorm/current
 Environment=NODE_ENV=production
 Environment=HOSTNAME=0.0.0.0
-Environment=PORT=3000
+Environment=PORT=%i
 EnvironmentFile=/app/ai-code/brainstorm/shared/.env
 ExecStart=/usr/bin/node /app/ai-code/brainstorm/current/server.js
 Restart=always
@@ -216,6 +220,14 @@ RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
+```
+
+For three local instances behind Nginx:
+
+```bash
+systemctl enable --now brainstorm@5000.service
+systemctl enable --now brainstorm@5001.service
+systemctl enable --now brainstorm@5002.service
 ```
 
 ### Schema Migrations
