@@ -44,5 +44,6 @@ export PRISMA_SKIP_POSTINSTALL_GENERATE=true
 
 npm ci
 npx prisma migrate deploy
+node scripts/backfill-post-content-html.mjs
 
 echo "Prisma migrations applied against ${SHARED_DIR}/prisma/dev.db"

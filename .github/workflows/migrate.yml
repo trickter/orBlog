@@ -38,7 +38,8 @@ jobs:
             -czf "${RUNNER_TEMP}/${MIGRATION_ARCHIVE}" \
             package.json \
             package-lock.json \
-            prisma
+            prisma \
+            scripts/backfill-post-content-html.mjs
 
       - name: Prepare SSH
         shell: bash

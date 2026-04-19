@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getPostBySlug } from '@/lib/actions';
-import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 import { formatDate } from '@/lib/utils';
 import { BlogLayout } from '@/components/BlogLayout';
 import { ViewCounter } from '@/components/ViewCounter';
 import { loadBlogShellData } from '@/lib/blog-shell';
+import { compileMarkdownToHtml } from '@/lib/markdown-to-html';
 
 export const revalidate = 300;
 
@@ -24,6 +24,9 @@ export default async function PostPage({ params }: PageProps) {
   if (!post) {
     notFound();
   }
+
+  const renderedContentHtml =
+    post.contentHtml ?? compileMarkdownToHtml(post.content);
 
   return (
     <BlogLayout profile={profile} categories={categories}>
@@ -49,9 +52,10 @@ export default async function PostPage({ params }: PageProps) {
             </>
           )}
         </div>
-        <div className="prose prose-slate max-w-none dark:prose-invert">
-          <MarkdownRenderer content={post.content} />
-        </div>
+        <div
+          className="prose prose-slate max-w-none dark:prose-invert"
+          dangerouslySetInnerHTML={{ __html: renderedContentHtml }}
+        />
       </article>
     </BlogLayout>
   );

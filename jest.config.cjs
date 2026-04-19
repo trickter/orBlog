@@ -18,6 +18,7 @@ const config = {
   },
   testPathIgnorePatterns: [
     '<rootDir>/.next/',
+    '<rootDir>/.codex-buildcheck/',
     '<rootDir>/node_modules/',
     '<rootDir>/playwright/',
   ],

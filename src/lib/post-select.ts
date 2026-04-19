@@ -16,6 +16,11 @@ export const postWithCategorySelect = {
   },
 };
 
+export const postDetailSelect = {
+  ...postWithCategorySelect,
+  contentHtml: true,
+};
+
 export const postDropdownSelect = {
   id: true,
   title: true,

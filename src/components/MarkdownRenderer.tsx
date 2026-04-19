@@ -1,7 +1,5 @@
 import ReactMarkdown from 'react-markdown';
-import rehypeHighlight from 'rehype-highlight';
-import remarkGfm from 'remark-gfm';
-import { defaultUrlTransform } from 'react-markdown';
+import { createMarkdownRenderConfig } from '@/lib/markdown-rendering';
 
 interface MarkdownRendererProps {
   content: string;
@@ -14,34 +12,13 @@ export function MarkdownRenderer({
   className = '',
   preserveLineBreaks = false,
 }: MarkdownRendererProps) {
-  const urlTransform = (url: string, key: string) => {
-    if (
-      key === 'src' &&
-      (url.startsWith('data:image/') || url.startsWith('blob:'))
-    ) {
-      return url;
-    }
-    return defaultUrlTransform(url);
-  };
-
-  const paragraphClass = preserveLineBreaks ? 'whitespace-pre-line' : '';
-  const listItemClass = preserveLineBreaks ? 'whitespace-pre-line' : '';
+  const renderConfig = createMarkdownRenderConfig({ preserveLineBreaks });
 
   return (
     <div
       className={`prose prose-slate max-w-none dark:prose-invert ${className}`}
     >
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeHighlight]}
-        urlTransform={urlTransform}
-        components={{
-          p: ({ children }) => <p className={paragraphClass}>{children}</p>,
-          li: ({ children }) => <li className={listItemClass}>{children}</li>,
-        }}
-      >
-        {content}
-      </ReactMarkdown>
+      <ReactMarkdown {...renderConfig}>{content}</ReactMarkdown>
     </div>
   );
 }

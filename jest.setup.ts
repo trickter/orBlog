@@ -20,6 +20,10 @@ jest.mock('next/cache', () => ({
   unstable_cache: jest.fn((fn: (...args: unknown[]) => unknown) => fn),
 }));
 
+jest.mock('@/lib/markdown-to-html', () => ({
+  compileMarkdownToHtml: jest.fn((content: string) => `<p>${content}</p>`),
+}));
+
 // Mock crypto.randomUUID
 Object.defineProperty(globalThis, 'crypto', {
   value: {

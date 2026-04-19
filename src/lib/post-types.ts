@@ -9,6 +9,7 @@ export interface PostWithCategory {
   title: string;
   slug: string;
   content: string;
+  contentHtml?: string | null;
   published: boolean;
   viewCount: number;
   createdAt: Date;

@@ -3,7 +3,11 @@
 import { getPrisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { postDropdownSelect, postWithCategorySelect } from '@/lib/post-select';
+import {
+  postDetailSelect,
+  postDropdownSelect,
+  postWithCategorySelect,
+} from '@/lib/post-select';
 import {
   SEARCH_DROPDOWN_LIMIT,
   SEARCH_DROPDOWN_MAX_QUERY_LENGTH,
@@ -14,6 +18,7 @@ import {
   imageLookupKeys,
   rewriteMarkdownImageLinks,
 } from '@/lib/markdown-image-links';
+import { compileMarkdownToHtml } from '@/lib/markdown-to-html';
 
 export async function getPosts(categorySlug?: string) {
   return getPrisma().post.findMany({
@@ -36,7 +41,7 @@ export async function getAllPosts() {
 export async function getPostBySlug(slug: string) {
   return getPrisma().post.findUnique({
     where: { slug },
-    select: postWithCategorySelect,
+    select: postDetailSelect,
   });
 }
 
@@ -195,12 +200,14 @@ export async function createPost(
     zipImagesJson,
     slug
   );
+  const contentHtml = compileMarkdownToHtml(finalContent);
 
   await getPrisma().post.create({
     data: {
       title,
       slug,
       content: finalContent,
+      contentHtml,
       published,
       categoryId: categoryId || undefined,
     },
@@ -246,12 +253,15 @@ export async function updatePost(
     }
   }
 
+  const contentHtml = compileMarkdownToHtml(content);
+
   await getPrisma().post.update({
     where: { id },
     data: {
       title,
       slug,
       content,
+      contentHtml,
       published,
       ...(categoryId ? { categoryId } : { categoryId: null }),
     },
