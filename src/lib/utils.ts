@@ -20,6 +20,7 @@ export function extractExcerpt(
 ): string {
   // Remove markdown syntax for excerpt
   const plain = content
+    .replace(/!\[[^\]]*]\([^)]+\)/g, '')
     .replace(/#{1,6}\s/g, '')
     .replace(/\*\*|__/g, '')
     .replace(/\*|_/g, '')

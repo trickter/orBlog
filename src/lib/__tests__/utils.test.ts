@@ -39,6 +39,12 @@ describe('extractExcerpt', () => {
     expect(extractExcerpt(content)).toBe('Check out this link please');
   });
 
+  it('removes markdown images from excerpts', () => {
+    const content =
+      '![blog-performance-summary](/uploads/posts/perf/blog-performance-summary.png)\n\n正文从这里开始';
+    expect(extractExcerpt(content)).toBe('正文从这里开始');
+  });
+
   it('truncates long content', () => {
     const content = 'a'.repeat(300);
     const result = extractExcerpt(content, 200);
