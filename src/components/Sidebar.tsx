@@ -1,4 +1,5 @@
 import { Github, Twitter, Mail } from 'lucide-react';
+import type { TableOfContentsItem } from '@/lib/markdown-headings';
 
 interface Profile {
   name: string;
@@ -11,10 +12,12 @@ interface Profile {
 
 interface SidebarProps {
   profile: Profile;
+  tableOfContents?: TableOfContentsItem[];
 }
 
-export function Sidebar({ profile }: SidebarProps) {
+export function Sidebar({ profile, tableOfContents = [] }: SidebarProps) {
   const initial = profile.name.charAt(0).toUpperCase();
+  const hasTableOfContents = tableOfContents.length > 0;
 
   return (
     <aside className="w-full lg:w-56 lg:flex-shrink-0">
@@ -86,6 +89,35 @@ export function Sidebar({ profile }: SidebarProps) {
             )}
           </div>
         </div>
+
+        {hasTableOfContents && (
+          <nav
+            aria-label="文章目录"
+            className="mt-8 hidden border-t border-zinc-200/80 pt-5 text-left dark:border-zinc-800/80 lg:block"
+          >
+            <h3 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              目录
+            </h3>
+            <ol className="space-y-1.5 text-sm leading-6">
+              {tableOfContents.map((item) => (
+                <li
+                  key={item.id}
+                  style={{
+                    paddingLeft: `${Math.max(item.level - 1, 0) * 12}px`,
+                  }}
+                >
+                  <a
+                    href={`#${item.id}`}
+                    className="block truncate text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                    title={item.text}
+                  >
+                    {item.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
       </div>
     </aside>
   );

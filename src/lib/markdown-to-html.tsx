@@ -1,5 +1,9 @@
 import { marked } from 'marked';
 import { sanitizeMarkdownUrl } from '@/lib/markdown-url';
+import {
+  createHeadingIdGenerator,
+  getHeadingText,
+} from '@/lib/markdown-headings';
 
 interface CompileMarkdownToHtmlOptions {
   preserveLineBreaks?: boolean;
@@ -25,7 +29,15 @@ export function compileMarkdownToHtml(
   options: CompileMarkdownToHtmlOptions = {}
 ) {
   const renderer = new marked.Renderer();
+  const createHeadingId = createHeadingIdGenerator();
   renderer.code = ({ text, lang }) => renderCodeBlock(text, lang);
+  renderer.heading = (token) => {
+    const text = getHeadingText(token);
+    const id = createHeadingId(text);
+    const body = renderer.parser.parseInline(token.tokens);
+
+    return `<h${token.depth} id="${escapeHtml(id)}">${body}</h${token.depth}>`;
+  };
   renderer.html = ({ text }) => escapeHtml(text);
   renderer.link = ({ href = '', text, title }) => {
     const safeHref = sanitizeMarkdownUrl(href, 'href');

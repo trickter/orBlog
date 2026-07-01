@@ -7,6 +7,7 @@ import { ImageZoom } from '@/components/ImageZoom';
 import { ViewCounter } from '@/components/ViewCounter';
 import { loadBlogShellData } from '@/lib/blog-shell';
 import { compileMarkdownToHtml } from '@/lib/markdown-to-html';
+import { extractTableOfContents } from '@/lib/markdown-headings';
 
 export const revalidate = 300;
 
@@ -34,11 +35,15 @@ export default async function PostPage({ params }: PageProps) {
     notFound();
   }
 
-  const renderedContentHtml =
-    post.contentHtml ?? compileMarkdownToHtml(post.content);
+  const tableOfContents = extractTableOfContents(post.content);
+  const renderedContentHtml = compileMarkdownToHtml(post.content);
 
   return (
-    <BlogLayout profile={profile} categories={categories}>
+    <BlogLayout
+      profile={profile}
+      categories={categories}
+      tableOfContents={tableOfContents}
+    >
       <ViewCounter postId={post.id} />
 
       <article>

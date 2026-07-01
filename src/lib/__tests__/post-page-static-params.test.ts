@@ -20,6 +20,9 @@ describe('post page static params', () => {
     jest.doMock('@/lib/blog-shell', () => ({
       loadBlogShellData: jest.fn(),
     }));
+    jest.doMock('@/lib/markdown-headings', () => ({
+      extractTableOfContents: jest.fn(() => []),
+    }));
     jest.doMock('@/components/BlogLayout', () => ({
       BlogLayout: ({ children }: { children: ReactNode }) => children,
     }));
