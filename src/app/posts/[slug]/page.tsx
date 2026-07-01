@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getPostBySlug, getPublishedPostSlugs } from '@/lib/actions';
 import { formatDate } from '@/lib/utils';
 import { BlogLayout } from '@/components/BlogLayout';
+import { ImageZoom } from '@/components/ImageZoom';
 import { ViewCounter } from '@/components/ViewCounter';
 import { loadBlogShellData } from '@/lib/blog-shell';
 import { compileMarkdownToHtml } from '@/lib/markdown-to-html';
@@ -60,10 +61,12 @@ export default async function PostPage({ params }: PageProps) {
             </>
           )}
         </div>
-        <div
-          className="prose prose-slate max-w-none dark:prose-invert"
-          dangerouslySetInnerHTML={{ __html: renderedContentHtml }}
-        />
+        <ImageZoom>
+          <div
+            className="prose prose-slate max-w-none dark:prose-invert"
+            dangerouslySetInnerHTML={{ __html: renderedContentHtml }}
+          />
+        </ImageZoom>
       </article>
     </BlogLayout>
   );
