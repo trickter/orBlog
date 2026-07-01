@@ -21,7 +21,7 @@ export function Sidebar({ profile, tableOfContents = [] }: SidebarProps) {
 
   return (
     <aside className="w-full lg:w-56 lg:flex-shrink-0">
-      <div className="sticky top-20 rounded-2xl p-6">
+      <div className="sticky top-20 flex max-h-[calc(100vh-5rem)] flex-col rounded-2xl p-6">
         <div className="flex flex-col items-center text-center">
           {/* Avatar */}
           {profile.avatar ? (
@@ -93,12 +93,12 @@ export function Sidebar({ profile, tableOfContents = [] }: SidebarProps) {
         {hasTableOfContents && (
           <nav
             aria-label="文章目录"
-            className="mt-8 hidden border-t border-zinc-200/80 pt-5 text-left dark:border-zinc-800/80 lg:block"
+            className="mt-8 hidden min-h-0 flex-1 flex-col border-t border-zinc-200/80 pt-5 text-left dark:border-zinc-800/80 lg:flex"
           >
             <h3 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
               目录
             </h3>
-            <ol className="space-y-1.5 text-sm leading-6">
+            <ol className="min-h-0 space-y-1.5 overflow-y-auto pr-2 text-sm leading-6">
               {tableOfContents.map((item) => (
                 <li
                   key={item.id}
