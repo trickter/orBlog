@@ -33,6 +33,7 @@ trap cleanup EXIT
 
 mkdir -p "${APP_DIR}"
 mkdir -p "${SHARED_DIR}/prisma"
+mkdir -p "${SHARED_DIR}/uploads"
 mkdir -p "${RELEASES_DIR}"
 
 if [ ! -f "${SHARED_DIR}/.env" ]; then
@@ -64,9 +65,16 @@ fi
 
 tar -C "${STAGING_DIR}" -cf - . | tar -C "${NEW_RELEASE_DIR}" -xf -
 
+if [ -d "${STAGING_DIR}/public/uploads" ]; then
+  cp -a "${STAGING_DIR}/public/uploads/." "${SHARED_DIR}/uploads/"
+fi
+
 mkdir -p "${NEW_RELEASE_DIR}/prisma"
+mkdir -p "${NEW_RELEASE_DIR}/public"
 ln -sfn "${SHARED_DIR}/.env" "${NEW_RELEASE_DIR}/.env"
 ln -sfn "${SHARED_DIR}/prisma/dev.db" "${NEW_RELEASE_DIR}/prisma/dev.db"
+rm -rf "${NEW_RELEASE_DIR}/public/uploads"
+ln -sfn "${SHARED_DIR}/uploads" "${NEW_RELEASE_DIR}/public/uploads"
 
 ln -sfn "${NEW_RELEASE_DIR}" "${TMP_CURRENT_LINK}"
 mv -Tf "${TMP_CURRENT_LINK}" "${CURRENT_LINK}"
