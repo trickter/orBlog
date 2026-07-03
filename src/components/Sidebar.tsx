@@ -1,4 +1,5 @@
 import { Github, Twitter, Mail } from 'lucide-react';
+import { PostTableOfContents } from '@/components/PostTableOfContents';
 import type { TableOfContentsItem } from '@/lib/markdown-headings';
 
 interface Profile {
@@ -91,32 +92,10 @@ export function Sidebar({ profile, tableOfContents = [] }: SidebarProps) {
         </div>
 
         {hasTableOfContents && (
-          <nav
-            aria-label="文章目录"
+          <PostTableOfContents
+            items={tableOfContents}
             className="mt-8 hidden min-h-0 flex-1 flex-col border-t border-zinc-200/80 pt-5 text-left dark:border-zinc-800/80 lg:flex"
-          >
-            <h3 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-              目录
-            </h3>
-            <ol className="min-h-0 space-y-1.5 overflow-y-auto pr-2 text-xs leading-5">
-              {tableOfContents.map((item) => (
-                <li
-                  key={item.id}
-                  style={{
-                    paddingLeft: `${Math.max(item.level - 1, 0) * 8}px`,
-                  }}
-                >
-                  <a
-                    href={`#${item.id}`}
-                    className="block break-words text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-                    title={item.text}
-                  >
-                    {item.text}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </nav>
+          />
         )}
       </div>
     </aside>

@@ -4,6 +4,7 @@ import { getPostBySlug, getPublishedPostSlugs } from '@/lib/actions';
 import { formatDate } from '@/lib/utils';
 import { BlogLayout } from '@/components/BlogLayout';
 import { ImageZoom } from '@/components/ImageZoom';
+import { PostTableOfContents } from '@/components/PostTableOfContents';
 import { ViewCounter } from '@/components/ViewCounter';
 import { loadBlogShellData } from '@/lib/blog-shell';
 import { compileMarkdownToHtml } from '@/lib/markdown-to-html';
@@ -66,6 +67,11 @@ export default async function PostPage({ params }: PageProps) {
             </>
           )}
         </div>
+        <PostTableOfContents
+          items={tableOfContents}
+          className="mb-8 border-y border-zinc-200/80 py-4 text-left dark:border-zinc-800/80 lg:hidden"
+          listClassName="max-h-64"
+        />
         <ImageZoom>
           <div
             className="prose prose-slate max-w-none dark:prose-invert"
